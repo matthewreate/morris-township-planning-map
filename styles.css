@@ -22,6 +22,7 @@
   --border: #4b5d78;
   --review: #6b7a8a;
   --review-soft: rgba(107, 122, 138, 0.12);
+  --workspace-height: 760px;
 }
 
 * {
@@ -189,15 +190,31 @@ h2 {
 
 .app-shell {
   display: grid;
+  gap: 24px;
+}
+
+.workspace {
+  display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 390px);
   gap: 22px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .sidebar {
-  display: flex;
-  flex-direction: column;
+  min-width: 0;
+}
+
+.sidebar-workflow {
+  align-self: stretch;
+}
+
+.sidebar-scroll {
+  height: 100%;
+  max-height: var(--workspace-height);
+  overflow: auto;
+  display: grid;
   gap: 16px;
+  padding-right: 4px;
 }
 
 .panel,
@@ -340,6 +357,31 @@ h2 {
   gap: 14px;
 }
 
+.reference-section {
+  display: grid;
+  gap: 18px;
+}
+
+.reference-header {
+  margin-bottom: 0;
+}
+
+.reference-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+}
+
+.reference-block {
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.reference-block-wide {
+  grid-column: 1 / -1;
+}
+
 .legend-section {
   display: grid;
   gap: 8px;
@@ -407,9 +449,8 @@ h2 {
 .hotspot-list {
   display: grid;
   gap: 10px;
-  max-height: 320px;
-  overflow: auto;
-  padding-right: 4px;
+  max-height: none;
+  overflow: visible;
 }
 
 .hotspot-card {
@@ -744,6 +785,9 @@ h2 {
 .map-card {
   height: 100%;
   padding: 18px;
+  min-height: var(--workspace-height);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
 }
 
 .map-card-header {
@@ -757,7 +801,8 @@ h2 {
 
 #map {
   width: 100%;
-  min-height: 640px;
+  min-height: 680px;
+  height: 100%;
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(29, 42, 52, 0.1);
@@ -803,7 +848,8 @@ h2 {
 @media (max-width: 1040px) {
   .future-input-band,
   .masthead,
-  .app-shell {
+  .workspace,
+  .reference-grid {
     grid-template-columns: 1fr;
   }
 
@@ -818,6 +864,17 @@ h2 {
 
   .future-input-actions {
     justify-items: start;
+  }
+
+  .sidebar-scroll {
+    max-height: none;
+    height: auto;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .reference-block-wide {
+    grid-column: auto;
   }
 
   #map {
@@ -870,7 +927,7 @@ h2 {
   }
 
   .hotspot-list {
-    max-height: 240px;
+    max-height: none;
   }
 
   #map {

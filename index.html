@@ -86,101 +86,98 @@
       </section>
 
       <main class="app-shell">
-        <section class="map-column">
-          <div class="map-card">
-            <div class="map-card-header">
-              <div>
-                <p class="eyebrow">Map</p>
-                <h2>Walkability and Bikeability Review</h2>
+        <section class="workspace">
+          <section class="map-column">
+            <div class="map-card">
+              <div class="map-card-header">
+                <div>
+                  <p class="eyebrow">Map</p>
+                  <h2>Walkability and Bikeability Review</h2>
+                </div>
               </div>
+              <div id="map" aria-label="Interactive Morris Township planning map"></div>
             </div>
-            <div id="map" aria-label="Interactive Morris Township planning map"></div>
-          </div>
+          </section>
+
+          <aside class="sidebar sidebar-workflow">
+            <div class="sidebar-scroll">
+              <section class="panel panel-tools">
+                <div class="panel-header">
+                  <div>
+                    <h2>Map Tools</h2>
+                    <p class="panel-subtitle">
+                      Filter official planning categories and adjust supporting map
+                      layers.
+                    </p>
+                  </div>
+                </div>
+                <div class="tool-group">
+                  <div class="tool-group-header">
+                    <h3>Hotspot Filters</h3>
+                    <span class="pill" id="hotspot-total">0 total</span>
+                  </div>
+                  <form id="category-filters" class="control-list"></form>
+                </div>
+                <div class="tool-group">
+                  <div class="tool-group-header">
+                    <h3>Context Layers</h3>
+                    <span class="pill">Visible by default</span>
+                  </div>
+                  <form id="layer-toggles" class="control-list"></form>
+                </div>
+                <div class="tool-group">
+                  <div class="tool-group-header">
+                    <h3>Review Layers</h3>
+                  </div>
+                  <form id="review-layer-toggles" class="control-list"></form>
+                </div>
+              </section>
+
+              <section class="panel panel-list">
+                <div class="panel-header">
+                  <h2>Visible Hotspots</h2>
+                  <span class="pill" id="visible-count">0 in view</span>
+                </div>
+                <p class="panel-subtitle">
+                  Records currently visible within the active map view.
+                </p>
+                <div id="visible-hotspots" class="hotspot-list" aria-live="polite"></div>
+              </section>
+
+              <section class="panel panel-detail">
+                <div class="panel-header">
+                  <h2>Map Record</h2>
+                </div>
+                <div id="detail-panel" class="detail-panel">
+                  <p class="detail-empty">
+                    Select an official record, reference destination, or resident
+                    submission to view its description, category, and review
+                    details.
+                  </p>
+                </div>
+              </section>
+            </div>
+          </aside>
         </section>
 
-        <aside class="sidebar">
-          <section class="panel panel-tools">
-            <div class="panel-header">
-              <div>
-                <h2>Map Tools</h2>
-                <p class="panel-subtitle">
-                  Filter official planning categories and adjust supporting map
-                  layers.
-                </p>
-              </div>
-            </div>
-            <div class="tool-group">
-              <div class="tool-group-header">
-                <h3>Hotspot Filters</h3>
-                <span class="pill" id="hotspot-total">0 total</span>
-              </div>
-              <form id="category-filters" class="control-list"></form>
-            </div>
-            <div class="tool-group">
-              <div class="tool-group-header">
-                <h3>Context Layers</h3>
-                <span class="pill">Visible by default</span>
-              </div>
-              <form id="layer-toggles" class="control-list"></form>
-            </div>
-            <div class="tool-group">
-              <div class="tool-group-header">
-                <h3>Review Layers</h3>
-              </div>
-              <form id="review-layer-toggles" class="control-list"></form>
-            </div>
-          </section>
-
-          <section class="panel panel-list">
-            <div class="panel-header">
-              <h2>Visible Hotspots</h2>
-              <span class="pill" id="visible-count">0 in view</span>
-            </div>
-            <p class="panel-subtitle">
-              Records currently visible within the active map view.
-            </p>
-            <div id="visible-hotspots" class="hotspot-list" aria-live="polite"></div>
-          </section>
-
-          <section class="panel panel-detail">
-            <div class="panel-header">
-              <h2>Map Record</h2>
-            </div>
-            <div id="detail-panel" class="detail-panel">
-              <p class="detail-empty">
-                Select an official record, reference destination, or resident
-                submission to view its description, category, and review
-                details.
+        <section class="panel reference-section" aria-labelledby="map-reference-title">
+          <div class="panel-header reference-header">
+            <div>
+              <p class="eyebrow">Map Reference</p>
+              <h2 id="map-reference-title">How to Read This Map</h2>
+              <p class="panel-subtitle">
+                Interpret the map by data status, symbol type, and current planning use.
               </p>
             </div>
-          </section>
-
-          <section class="panel panel-summary">
-            <div class="panel-header">
-              <div>
-                <h2>Review Summary</h2>
-                <p class="panel-subtitle">
-                  Prototype planning-group view of recurring resident input now
-                  under review.
-                </p>
-              </div>
-            </div>
-            <div id="review-summary" class="summary-list"></div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-header">
-              <div>
-                <h2>How to Read This Map</h2>
-                <p class="panel-subtitle">
-                  Interpret the map by data status first, then by symbol and
-                  current planning use.
-                </p>
-              </div>
-            </div>
-            <div class="legend-block" id="legend"></div>
-          </section>
-        </aside>
+          </div>
+          <div class="reference-grid">
+            <section class="reference-block" id="reference-status"></section>
+            <section class="reference-block" id="reference-symbols"></section>
+            <section class="reference-block" id="reference-phase"></section>
+            <section class="reference-block" id="reference-context"></section>
+            <section class="reference-block reference-block-wide" id="reference-review-summary"></section>
+          </div>
+        </section>
       </main>
     </div>
 
