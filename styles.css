@@ -20,6 +20,8 @@
   --trails: #4d7b68;
   --crosswalks: #cf8a45;
   --border: #4b5d78;
+  --review: #6b7a8a;
+  --review-soft: rgba(107, 122, 138, 0.12);
 }
 
 * {
@@ -55,6 +57,29 @@ label {
 
 .page-header {
   padding: 8px 6px 26px;
+}
+
+.future-input-band {
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(260px, 1fr);
+  gap: 28px;
+  margin: 0 6px 24px;
+  border-color: rgba(29, 42, 52, 0.1);
+}
+
+.future-input-band h2 {
+  font-size: 1.28rem;
+  margin-bottom: 14px;
+}
+
+.future-input-band p {
+  margin: 0 0 10px;
+}
+
+.future-input-actions {
+  display: grid;
+  align-content: start;
+  gap: 12px;
 }
 
 .masthead {
@@ -311,12 +336,24 @@ h2 {
   gap: 14px;
 }
 
+.legend-section {
+  display: grid;
+  gap: 8px;
+}
+
 .legend-group-title {
   margin: 0 0 8px;
   font-size: 0.86rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.legend-copy {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 0.94rem;
 }
 
 .legend-items {
@@ -330,6 +367,37 @@ h2 {
   gap: 12px;
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+.summary-list {
+  display: grid;
+  gap: 14px;
+}
+
+.summary-group {
+  display: grid;
+  gap: 8px;
+}
+
+.summary-title {
+  margin: 0;
+  font-size: 0.86rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.summary-items {
+  display: grid;
+  gap: 6px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.94rem;
 }
 
 .hotspot-list {
@@ -450,6 +518,158 @@ h2 {
   opacity: 0.5;
 }
 
+.future-button-live {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.future-button-live:hover,
+.future-button-live:focus-visible {
+  filter: brightness(1.03);
+  outline: none;
+}
+
+.text-button {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 700;
+  padding: 0;
+  cursor: pointer;
+}
+
+.text-button:hover,
+.text-button:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(29, 42, 52, 0.34);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+  z-index: 999;
+}
+
+.drawer-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.report-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(460px, 100%);
+  height: 100vh;
+  padding: 26px 22px 24px;
+  background: rgba(255, 252, 247, 0.97);
+  border-left: 1px solid rgba(29, 42, 52, 0.08);
+  box-shadow: -16px 0 36px rgba(29, 42, 52, 0.16);
+  transform: translateX(100%);
+  transition: transform 180ms ease;
+  z-index: 1000;
+  overflow: auto;
+}
+
+.report-drawer.is-open {
+  transform: translateX(0);
+}
+
+.report-drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.drawer-close {
+  appearance: none;
+  border: 1px solid rgba(29, 42, 52, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.report-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid rgba(29, 42, 52, 0.12);
+  border-radius: 14px;
+  padding: 11px 12px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--ink);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 88px;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.field-help {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.coordinate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.drawer-footer {
+  display: grid;
+  gap: 10px;
+  padding-top: 4px;
+}
+
 .map-column {
   min-width: 0;
 }
@@ -514,6 +734,7 @@ h2 {
 }
 
 @media (max-width: 1040px) {
+  .future-input-band,
   .masthead,
   .app-shell {
     grid-template-columns: 1fr;
@@ -550,6 +771,11 @@ h2 {
   .panel-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .coordinate-grid,
+  .checkbox-grid {
+    grid-template-columns: 1fr;
   }
 
   .hotspot-list {

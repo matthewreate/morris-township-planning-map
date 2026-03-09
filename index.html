@@ -32,7 +32,8 @@
             <p class="lede">
               A working map for reviewing walkability and bikeability concerns
               in Morris Township, with current hotspot records organized for
-              discussion of sidewalk gaps, crossings, and local destinations.
+              discussion of sidewalk gaps, crossings, and reference
+              destinations.
             </p>
             <p class="masthead-note">
               This prototype presents TAC source material as a clearer civic
@@ -49,7 +50,7 @@
               </div>
               <div class="brief-row">
                 <dt>Source Data</dt>
-                <dd>TAC hotspot points with contextual township overlays; destination markers remain placeholders pending review.</dd>
+                <dd>TAC hotspot points with contextual township overlays and a curated set of Morris Township reference destinations.</dd>
               </div>
               <div class="brief-row">
                 <dt>Audience</dt>
@@ -59,6 +60,30 @@
           </section>
         </div>
       </header>
+
+      <section class="future-input-band panel" aria-labelledby="future-input-title">
+        <div class="future-input-copy">
+          <p class="eyebrow">Future Public Input</p>
+          <h2 id="future-input-title">Resident reports would be reviewed before entering the official planning record.</h2>
+          <p>
+            The current map reflects official working-group data.
+          </p>
+          <p>
+            Future resident submissions would remain under review until the planning group confirms how they should be used.
+          </p>
+          <p>
+            Repeated reports and requested destinations would help shape workshops, survey analysis, and stakeholder review.
+          </p>
+        </div>
+        <div class="future-input-actions">
+          <button type="button" class="future-button future-button-live" id="open-report-drawer">
+            Report a Location
+          </button>
+          <p class="subdued">
+            Prototype only. This flow demonstrates structure and review logic; it is not yet collecting live public submissions.
+          </p>
+        </div>
+      </section>
 
       <main class="app-shell">
         <section class="map-column">
@@ -79,7 +104,7 @@
               <div>
                 <h2>Map Tools</h2>
                 <p class="panel-subtitle">
-                  Filter hotspot categories and adjust supporting context
+                  Filter official planning categories and adjust supporting map
                   layers.
                 </p>
               </div>
@@ -97,6 +122,12 @@
                 <span class="pill">Visible by default</span>
               </div>
               <form id="layer-toggles" class="control-list"></form>
+            </div>
+            <div class="tool-group">
+              <div class="tool-group-header">
+                <h3>Review Layers</h3>
+              </div>
+              <form id="review-layer-toggles" class="control-list"></form>
             </div>
           </section>
 
@@ -117,39 +148,136 @@
             </div>
             <div id="detail-panel" class="detail-panel">
               <p class="detail-empty">
-                Select a hotspot or destination to view its description,
-                category, and source details.
+                Select an official record, reference destination, or resident
+                submission to view its description, category, and review
+                details.
               </p>
             </div>
+          </section>
+
+          <section class="panel panel-summary">
+            <div class="panel-header">
+              <div>
+                <h2>Review Summary</h2>
+                <p class="panel-subtitle">
+                  Prototype planning-group view of recurring resident input now
+                  under review.
+                </p>
+              </div>
+            </div>
+            <div id="review-summary" class="summary-list"></div>
           </section>
 
           <section class="panel">
             <div class="panel-header">
               <div>
-                <h2>Legend</h2>
+                <h2>How to Read This Map</h2>
                 <p class="panel-subtitle">
-                  TAC hotspot points are primary; destination markers remain
-                  placeholder discussion aids.
+                  Interpret the map by data status first, then by symbol and
+                  current planning use.
                 </p>
               </div>
             </div>
             <div class="legend-block" id="legend"></div>
           </section>
-
-          <section class="panel panel-future">
-            <div class="future-hook">
-              <button type="button" class="future-button" disabled>
-                Public Input Coming Later
-              </button>
-              <p class="subdued">
-                A future version can add public submissions or survey prompts
-                without changing the basic project structure.
-              </p>
-            </div>
-          </section>
         </aside>
       </main>
     </div>
+
+    <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+    <aside class="report-drawer" id="report-drawer" aria-hidden="true" aria-labelledby="report-drawer-title">
+      <div class="report-drawer-header">
+        <div>
+          <p class="eyebrow">Prototype Intake</p>
+          <h2 id="report-drawer-title">Report a Location</h2>
+        </div>
+        <button type="button" class="drawer-close" id="close-report-drawer" aria-label="Close report panel">
+          Close
+        </button>
+      </div>
+      <p class="panel-subtitle">
+        This is a static prototype of a future review workflow. Submissions shown here are not yet being stored live.
+      </p>
+      <form id="report-form" class="report-form">
+        <label class="field">
+          <span class="field-label">Submission type</span>
+          <select name="submission_type" required>
+            <option value="hotspot">Hotspot report</option>
+            <option value="destination_request">Destination request</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Issue type</span>
+          <select name="category" required>
+            <option value="sidewalk_gap">Sidewalk gap</option>
+            <option value="unsafe_crossing">Unsafe crossing</option>
+            <option value="visibility_issue">Visibility issue</option>
+            <option value="speeding_concern">Speeding concern</option>
+            <option value="accessibility_barrier">Accessibility barrier</option>
+            <option value="general_hotspot">General hotspot</option>
+            <option value="park">Park access request</option>
+            <option value="school">School access request</option>
+            <option value="trail_access">Trail access request</option>
+            <option value="civic">Civic destination request</option>
+            <option value="business">Business area request</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Nearby street or location</span>
+          <input type="text" name="location_text" placeholder="Example: Hanover Ave near Monroe St" required />
+        </label>
+
+        <div class="field">
+          <div class="field-row">
+            <span class="field-label">Map location</span>
+            <button type="button" class="text-button" id="capture-map-point">
+              Capture from map click
+            </button>
+          </div>
+          <div class="coordinate-grid">
+            <input type="text" name="latitude" id="report-latitude" placeholder="Latitude" inputmode="decimal" />
+            <input type="text" name="longitude" id="report-longitude" placeholder="Longitude" inputmode="decimal" />
+          </div>
+          <p class="field-help" id="capture-status">
+            Coordinates are optional. Use map click capture later for a live workflow.
+          </p>
+        </div>
+
+        <label class="field">
+          <span class="field-label">Issue description</span>
+          <textarea name="description" rows="4" placeholder="Describe the location and why it feels difficult, unsafe, or incomplete." required></textarea>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Desired destination (optional)</span>
+          <input type="text" name="desired_destination" placeholder="Example: Woodland School or Frelinghuysen Arboretum" />
+        </label>
+
+        <fieldset class="field">
+          <legend class="field-label">Concern mode</legend>
+          <div class="checkbox-grid">
+            <label><input type="checkbox" name="concern_mode" value="walking" /> Walking</label>
+            <label><input type="checkbox" name="concern_mode" value="biking" /> Biking</label>
+            <label><input type="checkbox" name="concern_mode" value="accessibility" /> Accessibility</label>
+            <label><input type="checkbox" name="concern_mode" value="safety" /> Safety</label>
+          </div>
+        </fieldset>
+
+        <label class="field">
+          <span class="field-label">Additional notes (optional)</span>
+          <textarea name="additional_notes" rows="3" placeholder="Optional notes about walking, biking, accessibility, or safety concerns."></textarea>
+        </label>
+
+        <div class="drawer-footer">
+          <button type="submit" class="future-button future-button-live">Submit for Review</button>
+          <p class="field-help" id="report-feedback">
+            Prototype only. A live release could later route this form to Google Sheets, Airtable, or another lightweight review tool.
+          </p>
+        </div>
+      </form>
+    </aside>
 
     <noscript>
       <div class="noscript-banner">

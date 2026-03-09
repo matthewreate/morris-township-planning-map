@@ -14,7 +14,7 @@
         "id": "destination-01",
         "title": "Fosterfields Living Historical Farm",
         "category": "park",
-        "description": "Regional destination with farm grounds, walking access, and event programming.",
+        "description": "County farm and education site included as a major public destination within the township.",
         "latitude": 40.804052,
         "longitude": -74.505213
       }
@@ -32,7 +32,7 @@
         "id": "destination-02",
         "title": "Frelinghuysen Arboretum",
         "category": "park",
-        "description": "Major public garden and education destination with strong pedestrian interest.",
+        "description": "Public garden and cultural landscape included as a year-round walking and civic reference point.",
         "latitude": 40.800675,
         "longitude": -74.450546
       }
@@ -50,7 +50,7 @@
         "id": "destination-03",
         "title": "Morris Township Municipal Building",
         "category": "civic",
-        "description": "Town civic center and a useful anchor for sidewalk and crossing discussions.",
+        "description": "Municipal civic center included as a reference point for township access and public-facing services.",
         "latitude": 40.780391,
         "longitude": -74.461776
       }
@@ -68,7 +68,7 @@
         "id": "destination-04",
         "title": "Woodland School",
         "category": "school",
-        "description": "Representative school destination used to discuss child walking routes and crossings.",
+        "description": "School campus included to represent student walking routes and nearby crossing conditions.",
         "latitude": 40.793962,
         "longitude": -74.438936
       }
@@ -78,17 +78,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -74.495112,
-          40.790294
+          -74.447959,
+          40.795257
         ]
       },
       "properties": {
         "id": "destination-05",
-        "title": "Traction Line Recreation Trail Access",
-        "category": "trail_access",
-        "description": "Placeholder trail access point showing how greenway destinations can be highlighted.",
-        "latitude": 40.790294,
-        "longitude": -74.495112
+        "title": "Morris Museum",
+        "category": "civic",
+        "description": "Regional cultural institution included as a civic destination near several identified pedestrian concerns.",
+        "latitude": 40.795257,
+        "longitude": -74.447959
       }
     },
     {
@@ -96,17 +96,17 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -74.452888,
-          40.787828
+          -74.46596,
+          40.773836
         ]
       },
       "properties": {
         "id": "destination-06",
-        "title": "Madison Avenue Retail Cluster",
-        "category": "business",
-        "description": "Representative neighborhood-serving business area included as a placeholder destination.",
-        "latitude": 40.787828,
-        "longitude": -74.452888
+        "title": "Loantaka Brook Reservation South Street Access",
+        "category": "trail_access",
+        "description": "South Street entrance to Loantaka Brook Reservation included as a key trail and recreation access point.",
+        "latitude": 40.773836,
+        "longitude": -74.46596
       }
     }
   ]

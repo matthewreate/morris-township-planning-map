@@ -84,16 +84,29 @@ const CONTEXT_GROUPS = [
   },
 ];
 
+const REVIEW_LAYER_GROUPS = [
+  {
+    id: "resident_input",
+    label: "Resident Input / Under Review",
+    description: "Sample resident submissions held apart from official planning data.",
+    color: "#6b7a8a",
+  },
+];
+
 const appState = {
   map: null,
   hotspotEntries: [],
   destinationEntries: [],
+  residentEntries: [],
   contextLayers: {},
   activeHotspotCategories: new Set(HOTSPOT_CATEGORIES.map((category) => category.id)),
   activeContextGroups: new Set(CONTEXT_GROUPS.map((group) => group.id)),
+  activeReviewLayers: new Set(REVIEW_LAYER_GROUPS.map((group) => group.id)),
   selectedFeature: null,
   hotspotLayerGroup: null,
   destinationLayerGroup: null,
+  residentLayerGroup: null,
+  capturePending: false,
 };
 
 const elements = {
@@ -101,9 +114,21 @@ const elements = {
   visibleCount: document.getElementById("visible-count"),
   categoryFilters: document.getElementById("category-filters"),
   layerToggles: document.getElementById("layer-toggles"),
+  reviewLayerToggles: document.getElementById("review-layer-toggles"),
   legend: document.getElementById("legend"),
   visibleHotspots: document.getElementById("visible-hotspots"),
   detailPanel: document.getElementById("detail-panel"),
+  reviewSummary: document.getElementById("review-summary"),
+  openReportDrawer: document.getElementById("open-report-drawer"),
+  closeReportDrawer: document.getElementById("close-report-drawer"),
+  drawerBackdrop: document.getElementById("drawer-backdrop"),
+  reportDrawer: document.getElementById("report-drawer"),
+  reportForm: document.getElementById("report-form"),
+  captureMapPoint: document.getElementById("capture-map-point"),
+  reportLatitude: document.getElementById("report-latitude"),
+  reportLongitude: document.getElementById("report-longitude"),
+  captureStatus: document.getElementById("capture-status"),
+  reportFeedback: document.getElementById("report-feedback"),
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -115,25 +140,38 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function init() {
-  const [hotspots, destinations, contextLines] = await Promise.all([
+  const [hotspots, destinations, contextLines, residentSubmissions] = await Promise.all([
     loadGeoJSON("data/hotspots.geojson"),
     loadGeoJSON("data/destinations.geojson"),
     loadGeoJSON("data/context-lines.geojson"),
+    loadJSON("data/resident-submissions.json"),
   ]);
 
   renderCategoryFilters(hotspots.features);
   renderLayerToggles();
+  renderReviewLayerToggles();
   renderLegend();
   initializeMap();
   buildContextLayers(contextLines.features);
   buildDestinations(destinations.features);
   buildHotspots(hotspots.features);
+  buildResidentSubmissions(residentSubmissions);
+  renderReviewSummary(residentSubmissions);
   addMorristownMask();
   appState.map.on("moveend", renderVisibleHotspotsList);
+  bindReportFlow();
   renderVisibleHotspotsList();
 }
 
 async function loadGeoJSON(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    throw new Error(`Failed to load ${path}`);
+  }
+  return response.json();
+}
+
+async function loadJSON(path) {
   const response = await fetch(path);
   if (!response.ok) {
     throw new Error(`Failed to load ${path}`);
@@ -173,9 +211,13 @@ function initializeMap() {
   map.createPane("destinationPane");
   map.getPane("destinationPane").style.zIndex = 430;
 
+  map.createPane("residentPane");
+  map.getPane("residentPane").style.zIndex = 440;
+
   map.createPane("hotspotPane");
   map.getPane("hotspotPane").style.zIndex = 450;
 
+  map.on("click", handleMapClickForCapture);
   appState.map = map;
 }
 
@@ -287,6 +329,45 @@ function buildContextLayers(features) {
   });
 }
 
+function buildResidentSubmissions(records) {
+  const residentLayerGroup = L.layerGroup().addTo(appState.map);
+  appState.residentLayerGroup = residentLayerGroup;
+  appState.residentEntries = records
+    .filter((record) => typeof record.latitude === "number" && typeof record.longitude === "number")
+    .map((record) => {
+      const marker = L.circleMarker([record.latitude, record.longitude], {
+        pane: "residentPane",
+        radius: 7,
+        fillColor: "#ffffff",
+        fillOpacity: 0.7,
+        color: "#6b7a8a",
+        weight: 3,
+        dashArray: "2 3",
+      });
+
+      marker.bindPopup(buildResidentPopupMarkup(record), {
+        className: "map-popup",
+        maxWidth: 300,
+      });
+
+      marker.on("click", () => {
+        selectFeature({
+          kind: "resident_submission",
+          feature: { properties: record },
+          marker,
+          openPopup: false,
+        });
+      });
+
+      marker.addTo(residentLayerGroup);
+
+      return {
+        feature: { properties: record },
+        marker,
+      };
+    });
+}
+
 function addMorristownMask() {
   L.circle([40.7965, -74.4815], {
     pane: "maskPane",
@@ -390,6 +471,44 @@ function renderLayerToggles() {
   });
 }
 
+function renderReviewLayerToggles() {
+  elements.reviewLayerToggles.innerHTML = "";
+
+  REVIEW_LAYER_GROUPS.forEach((group) => {
+    const wrapper = document.createElement("label");
+    wrapper.className = "control-item";
+    wrapper.innerHTML = `
+      <span class="control-main">
+        <input type="checkbox" name="review-layer" value="${group.id}" checked />
+        <span class="swatch" style="background:#ffffff; box-shadow: 0 0 0 2px ${group.color}"></span>
+        <span class="control-text">
+          <span class="control-label">${group.label}</span>
+          <span class="control-hint">${group.description}</span>
+        </span>
+      </span>
+    `;
+    elements.reviewLayerToggles.append(wrapper);
+  });
+
+  elements.reviewLayerToggles.addEventListener("change", () => {
+    const checkedValues = Array.from(
+      elements.reviewLayerToggles.querySelectorAll("input:checked"),
+      (input) => input.value,
+    );
+    appState.activeReviewLayers = new Set(checkedValues);
+
+    if (!appState.residentLayerGroup) {
+      return;
+    }
+
+    if (appState.activeReviewLayers.has("resident_input")) {
+      appState.residentLayerGroup.addTo(appState.map);
+    } else {
+      appState.map.removeLayer(appState.residentLayerGroup);
+    }
+  });
+}
+
 function renderLegend() {
   const hotspotItems = HOTSPOT_CATEGORIES.map(
     (category) => `
@@ -420,23 +539,65 @@ function renderLegend() {
     `,
   ).join("");
 
+  const reviewItems = REVIEW_LAYER_GROUPS.map(
+    (group) => `
+      <div class="legend-item">
+        <span class="swatch" style="background:#ffffff; box-shadow: 0 0 0 2px ${group.color}"></span>
+        <span>${group.label}</span>
+      </div>
+    `,
+  ).join("");
+
   elements.legend.innerHTML = `
-    <div>
-      <h3 class="legend-group-title">Hotspots</h3>
-      <div class="legend-items">${hotspotItems}</div>
-    </div>
-    <div>
-      <h3 class="legend-group-title">Destinations</h3>
-      <div class="legend-items">${destinationItems}</div>
-    </div>
-    <div>
-      <h3 class="legend-group-title">Context</h3>
-      <div class="legend-items">${contextItems}</div>
-    </div>
-    <p class="subdued">
-      The central gray mask is a visual cue to de-emphasize Morristown for this
-      Morris Township-focused discussion. It is not an official boundary.
-    </p>
+    <section class="legend-section">
+      <h3 class="legend-group-title">Data Status</h3>
+      <div class="legend-items">
+        <div class="legend-item">
+          <span class="swatch" style="background:#9e3a35"></span>
+          <span>Official planning data: TAC and working-group records used as the current planning base.</span>
+        </div>
+        <div class="legend-item">
+          <span class="swatch" style="background:#ffffff; box-shadow: 0 0 0 2px #6b7a8a"></span>
+          <span>Resident input / under review: sample submissions held apart from the official map.</span>
+        </div>
+        <div class="legend-item">
+          <span class="swatch" style="background:#274c5e"></span>
+          <span>Reference destinations: civic anchors used to interpret where people are trying to go.</span>
+        </div>
+        <div class="legend-item">
+          <span class="swatch-line" style="border-top-color:#4b5d78"></span>
+          <span>Context layers: sidewalks, trails, borders, and crosswalks shown for orientation.</span>
+        </div>
+      </div>
+    </section>
+    <section class="legend-section">
+      <h3 class="legend-group-title">Map Symbols</h3>
+      <div>
+        <h4 class="legend-group-title">Official Planning Data</h4>
+        <div class="legend-items">${hotspotItems}</div>
+      </div>
+      <div>
+        <h4 class="legend-group-title">Reference Destinations</h4>
+        <div class="legend-items">${destinationItems}</div>
+      </div>
+      <div>
+        <h4 class="legend-group-title">Resident Input / Under Review</h4>
+        <div class="legend-items">${reviewItems}</div>
+      </div>
+      <div>
+        <h4 class="legend-group-title">Context</h4>
+        <div class="legend-items">${contextItems}</div>
+      </div>
+    </section>
+    <section class="legend-section">
+      <h3 class="legend-group-title">Use in This Phase</h3>
+      <p class="legend-copy">Use this map to review known issues, compare them with destinations and context, and prepare survey and workshop questions.</p>
+      <p class="legend-copy">Do not read it as a complete inventory of every walking or biking condition in the township.</p>
+    </section>
+    <section class="legend-section">
+      <h3 class="legend-group-title">Map Context</h3>
+      <p class="legend-copy">The central gray mask is a visual cue to de-emphasize Morristown for this Morris Township-focused discussion. It is not an official boundary.</p>
+    </section>
   `;
 }
 
@@ -541,7 +702,7 @@ function renderVisibleHotspotsList() {
 function selectFeature({ kind, feature, marker, openPopup }) {
   appState.selectedFeature = {
     id: feature.properties.id,
-    title: feature.properties.title,
+    title: feature.properties.title || feature.properties.location_text,
     category: feature.properties.category,
     kind,
   };
@@ -561,7 +722,7 @@ function clearSelectedFeature() {
     appState.map.closePopup();
   }
   elements.detailPanel.innerHTML =
-    '<p class="detail-empty">Select a hotspot or destination to view its description, category, and source details.</p>';
+    '<p class="detail-empty">Select an official record, reference destination, or resident submission to view its description, category, and review details.</p>';
   refreshMarkerStyles();
 }
 
@@ -570,6 +731,8 @@ function renderDetailPanel(kind, feature) {
   const categoryMeta =
     kind === "hotspot"
       ? getHotspotCategory(properties.category)
+      : kind === "resident_submission"
+        ? getResidentCategoryMeta(properties)
       : DESTINATION_CATEGORIES[properties.category] || {
           label: "Destination",
           color: "#274c5e",
@@ -579,14 +742,27 @@ function renderDetailPanel(kind, feature) {
     kind === "hotspot"
       ? [
           ["Category", categoryMeta.label],
+          ["Record Status", "Official planning data"],
           ["Source Layer", properties.source_layer || "Unspecified"],
-          ["Status", properties.status || "Unspecified"],
+          ["Working Status", properties.status || "Unspecified"],
           ["Source", properties.source || "Unspecified"],
           ["Notes", properties.notes || "None added yet"],
         ]
+      : kind === "resident_submission"
+        ? [
+          ["Category", categoryMeta.label],
+          ["Record Status", "Under review"],
+          ["Record Type", properties.submission_type === "destination_request" ? "Destination request" : "Resident hotspot report"],
+          ["Review Status", humanizeReviewStatus(properties.review_status)],
+          ["Location", properties.location_text || "Unspecified"],
+          ["Requested Destination", properties.desired_destination || "Not specified"],
+          ["Concern Mode", (properties.concern_mode || []).join(", ") || "Not specified"],
+          ["Submitted", properties.submitted_at || "Unspecified"],
+        ]
       : [
           ["Category", categoryMeta.label],
-          ["Record Type", "Destination placeholder"],
+          ["Record Status", "Reference destination"],
+          ["Record Type", "Reference destination"],
           ["Coordinates", `${properties.latitude.toFixed(5)}, ${properties.longitude.toFixed(5)}`],
         ];
 
@@ -648,6 +824,21 @@ function refreshMarkerStyles() {
       fillOpacity: isSelected ? 0.95 : 0.82,
     });
   });
+
+  appState.residentEntries.forEach((entry) => {
+    const isSelected =
+      appState.selectedFeature &&
+      appState.selectedFeature.kind === "resident_submission" &&
+      appState.selectedFeature.id === entry.feature.properties.id;
+
+    entry.marker.setStyle({
+      radius: isSelected ? 9 : 7,
+      fillColor: "#ffffff",
+      color: isSelected ? "#203847" : "#6b7a8a",
+      weight: isSelected ? 4 : 3,
+      fillOpacity: isSelected ? 0.82 : 0.7,
+    });
+  });
 }
 
 function buildPopupMarkup(feature, kind) {
@@ -656,12 +847,171 @@ function buildPopupMarkup(feature, kind) {
     kind === "hotspot"
       ? getHotspotCategory(properties.category)
       : DESTINATION_CATEGORIES[properties.category] || { label: "Destination" };
+  const statusLabel =
+    kind === "hotspot" ? "Official planning data" : "Reference destination";
 
   return `
     <h3>${escapeHtml(properties.title)}</h3>
+    <p><strong>${statusLabel}</strong></p>
     <p><strong>${categoryMeta.label}</strong></p>
     <p>${escapeHtml(properties.description || "No description provided.")}</p>
   `;
+}
+
+function buildResidentPopupMarkup(record) {
+  return `
+    <h3>${escapeHtml(record.title || record.location_text)}</h3>
+    <p><strong>Under review</strong></p>
+    <p>${escapeHtml(record.description || "No description provided.")}</p>
+  `;
+}
+
+function renderReviewSummary(records) {
+  const categoryCounts = new Map();
+  const locationCounts = new Map();
+  const destinationCounts = new Map();
+
+  records.forEach((record) => {
+    categoryCounts.set(record.category, (categoryCounts.get(record.category) || 0) + 1);
+    if (record.location_text) {
+      locationCounts.set(record.location_text, (locationCounts.get(record.location_text) || 0) + 1);
+    }
+    if (record.desired_destination) {
+      destinationCounts.set(record.desired_destination, (destinationCounts.get(record.desired_destination) || 0) + 1);
+    }
+  });
+
+  elements.reviewSummary.innerHTML = `
+    ${renderSummaryGroup("Counts by issue", categoryCounts, formatCategoryLabel)}
+    ${renderSummaryGroup("Repeated locations", locationCounts, null)}
+    ${renderSummaryGroup("Requested destinations", destinationCounts, null)}
+  `;
+}
+
+function renderSummaryGroup(title, counts, formatter) {
+  const items = Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 3);
+
+  return `
+    <section class="summary-group">
+      <h3 class="summary-title">${escapeHtml(title)}</h3>
+      <div class="summary-items">
+        ${items.length
+          ? items
+              .map(
+                ([label, count]) => `
+                  <div class="summary-item">
+                    <span>${escapeHtml(formatter ? formatter(label) : label)}</span>
+                    <span>${count}</span>
+                  </div>
+                `,
+              )
+              .join("")
+          : '<p class="subdued">No review data available.</p>'}
+      </div>
+    </section>
+  `;
+}
+
+function bindReportFlow() {
+  elements.openReportDrawer.addEventListener("click", openReportDrawer);
+  elements.closeReportDrawer.addEventListener("click", closeReportDrawer);
+  elements.drawerBackdrop.addEventListener("click", closeReportDrawer);
+  elements.captureMapPoint.addEventListener("click", toggleCoordinateCapture);
+  elements.reportForm.addEventListener("submit", handleReportSubmit);
+}
+
+function openReportDrawer() {
+  elements.reportDrawer.classList.add("is-open");
+  elements.drawerBackdrop.hidden = false;
+  requestAnimationFrame(() => {
+    elements.drawerBackdrop.classList.add("is-open");
+  });
+  elements.reportDrawer.setAttribute("aria-hidden", "false");
+}
+
+function closeReportDrawer() {
+  appState.capturePending = false;
+  elements.captureStatus.textContent =
+    "Coordinates are optional. Use map click capture later for a live workflow.";
+  elements.reportDrawer.classList.remove("is-open");
+  elements.drawerBackdrop.classList.remove("is-open");
+  elements.reportDrawer.setAttribute("aria-hidden", "true");
+  setTimeout(() => {
+    if (!elements.drawerBackdrop.classList.contains("is-open")) {
+      elements.drawerBackdrop.hidden = true;
+    }
+  }, 180);
+}
+
+function toggleCoordinateCapture() {
+  appState.capturePending = !appState.capturePending;
+  elements.captureStatus.textContent = appState.capturePending
+    ? "Click once on the map to place a prototype location capture."
+    : "Coordinates are optional. Use map click capture later for a live workflow.";
+}
+
+function handleMapClickForCapture(event) {
+  if (!appState.capturePending) {
+    return;
+  }
+  elements.reportLatitude.value = event.latlng.lat.toFixed(5);
+  elements.reportLongitude.value = event.latlng.lng.toFixed(5);
+  elements.captureStatus.textContent =
+    "Prototype coordinates captured from the map. In a live release, this step would attach the report to a review queue.";
+  appState.capturePending = false;
+}
+
+function handleReportSubmit(event) {
+  event.preventDefault();
+  const formData = new FormData(elements.reportForm);
+  const concernModes = formData.getAll("concern_mode");
+
+  // Stub only: a future live release would POST this payload to a lightweight review endpoint.
+  const draftSubmission = {
+    submission_type: formData.get("submission_type"),
+    category: formData.get("category"),
+    location_text: formData.get("location_text"),
+    latitude: formData.get("latitude") || null,
+    longitude: formData.get("longitude") || null,
+    description: formData.get("description"),
+    desired_destination: formData.get("desired_destination"),
+    additional_notes: formData.get("additional_notes"),
+    concern_mode: concernModes,
+    review_status: "under_review",
+  };
+
+  elements.reportFeedback.textContent =
+    `Prototype capture recorded for review: ${draftSubmission.location_text || "location not specified"}. A live release could send this draft to Google Sheets, Airtable, or another lightweight review tool.`;
+  elements.reportForm.reset();
+  elements.reportLatitude.value = "";
+  elements.reportLongitude.value = "";
+  appState.capturePending = false;
+  elements.captureStatus.textContent =
+    "Coordinates are optional. Use map click capture later for a live workflow.";
+}
+
+function getResidentCategoryMeta(record) {
+  if (record.submission_type === "destination_request") {
+    return DESTINATION_CATEGORIES[record.category] || {
+      label: formatCategoryLabel(record.category),
+      color: "#6b7a8a",
+    };
+  }
+
+  return getHotspotCategory(record.category);
+}
+
+function formatCategoryLabel(value) {
+  return String(value)
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function humanizeReviewStatus(status) {
+  return formatCategoryLabel(status || "under_review");
 }
 
 function getHotspotCategory(categoryId) {
