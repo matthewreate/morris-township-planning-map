@@ -106,8 +106,6 @@ const appState = {
   hotspotLayerGroup: null,
   destinationLayerGroup: null,
   residentLayerGroup: null,
-  capturePending: false,
-  captureMarker: null,
 };
 
 const elements = {
@@ -120,18 +118,6 @@ const elements = {
   detailPanel: document.getElementById("detail-panel"),
   referenceContent: document.getElementById("reference-content"),
   mapStatus: document.getElementById("map-status"),
-  openReportDrawer: document.getElementById("open-report-drawer"),
-  closeReportDrawer: document.getElementById("close-report-drawer"),
-  drawerBackdrop: document.getElementById("drawer-backdrop"),
-  reportDrawer: document.getElementById("report-drawer"),
-  reportForm: document.getElementById("report-form"),
-  captureMapPoint: document.getElementById("capture-map-point"),
-  cancelMapCapture: document.getElementById("cancel-map-capture"),
-  captureBanner: document.getElementById("capture-banner"),
-  reportLatitude: document.getElementById("report-latitude"),
-  reportLongitude: document.getElementById("report-longitude"),
-  captureStatus: document.getElementById("capture-status"),
-  reportFeedback: document.getElementById("report-feedback"),
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -158,7 +144,6 @@ async function init() {
   if (!ensureLeafletAvailable()) {
     elements.detailPanel.innerHTML =
       '<p class="detail-empty">The planning records are available, but the interactive map could not be initialized right now.</p>';
-    bindReportFlow();
     return;
   }
 
@@ -170,7 +155,6 @@ async function init() {
   renderReviewSummary(residentSubmissions);
   addMorristownMask();
   appState.map.on("moveend", renderVisibleHotspotsList);
-  bindReportFlow();
   renderVisibleHotspotsList();
 }
 
@@ -228,7 +212,6 @@ function initializeMap() {
   map.createPane("hotspotPane");
   map.getPane("hotspotPane").style.zIndex = 450;
 
-  map.on("click", handleMapClickForCapture);
   appState.map = map;
   hideMapFailure();
 }
@@ -930,142 +913,6 @@ function renderSummaryGroup(title, counts, formatter) {
   `;
 }
 
-function bindReportFlow() {
-  elements.openReportDrawer.addEventListener("click", openReportDrawer);
-  elements.closeReportDrawer.addEventListener("click", closeReportDrawer);
-  elements.drawerBackdrop.addEventListener("click", closeReportDrawer);
-  elements.captureMapPoint.addEventListener("click", toggleCoordinateCapture);
-  elements.cancelMapCapture.addEventListener("click", cancelCoordinateCapture);
-  elements.reportForm.addEventListener("submit", handleReportSubmit);
-}
-
-function openReportDrawer() {
-  elements.reportDrawer.classList.add("is-open");
-  elements.drawerBackdrop.hidden = false;
-  document.body.classList.add("is-drawer-open");
-  requestAnimationFrame(() => {
-    elements.drawerBackdrop.classList.add("is-open");
-  });
-  elements.reportDrawer.setAttribute("aria-hidden", "false");
-}
-
-function closeReportDrawer(options = {}) {
-  const { preserveCapture = false } = options;
-  if (!preserveCapture) {
-    resetCoordinateCapture();
-  }
-  elements.reportDrawer.classList.remove("is-open");
-  elements.drawerBackdrop.classList.remove("is-open");
-  elements.reportDrawer.setAttribute("aria-hidden", "true");
-  document.body.classList.remove("is-drawer-open");
-  setTimeout(() => {
-    if (!elements.drawerBackdrop.classList.contains("is-open")) {
-      elements.drawerBackdrop.hidden = true;
-    }
-  }, 180);
-}
-
-function toggleCoordinateCapture() {
-  if (appState.capturePending) {
-    cancelCoordinateCapture();
-    return;
-  }
-
-  appState.capturePending = true;
-  elements.captureStatus.textContent =
-    "Map capture is active. Click once on the map to place this report.";
-  elements.captureMapPoint.textContent = "Cancel map capture";
-  elements.captureBanner.hidden = false;
-  document.body.classList.add("map-capture-active");
-  closeReportDrawer({ preserveCapture: true });
-}
-
-function handleMapClickForCapture(event) {
-  if (!appState.capturePending) {
-    return;
-  }
-  elements.reportLatitude.value = event.latlng.lat.toFixed(5);
-  elements.reportLongitude.value = event.latlng.lng.toFixed(5);
-  renderCaptureMarker(event.latlng);
-  elements.captureStatus.textContent =
-    "Prototype coordinates captured from the map. Adjust them manually if needed before submitting for review.";
-  resetCoordinateCapture({ keepStatus: true });
-  openReportDrawer();
-}
-
-function cancelCoordinateCapture() {
-  resetCoordinateCapture();
-  if (elements.reportDrawer.getAttribute("aria-hidden") === "true") {
-    openReportDrawer();
-  }
-}
-
-function resetCoordinateCapture(options = {}) {
-  const { keepStatus = false } = options;
-  appState.capturePending = false;
-  elements.captureBanner.hidden = true;
-  document.body.classList.remove("map-capture-active");
-  elements.captureMapPoint.textContent = "Capture from map click";
-  if (!keepStatus) {
-    elements.captureStatus.textContent =
-      "Coordinates are optional. Use map click capture to place the report directly on the map.";
-  }
-}
-
-function renderCaptureMarker(latlng) {
-  if (!appState.captureMarker) {
-    appState.captureMarker = L.circleMarker(latlng, {
-      pane: "residentPane",
-      radius: 8,
-      fillColor: "#ffffff",
-      color: "#27566b",
-      weight: 3,
-      fillOpacity: 0.9,
-      dashArray: "4 3",
-    }).addTo(appState.map);
-    return;
-  }
-
-  appState.captureMarker.setLatLng(latlng);
-}
-
-function clearCaptureMarker() {
-  if (!appState.captureMarker) {
-    return;
-  }
-
-  appState.map.removeLayer(appState.captureMarker);
-  appState.captureMarker = null;
-}
-
-function handleReportSubmit(event) {
-  event.preventDefault();
-  const formData = new FormData(elements.reportForm);
-  const concernModes = formData.getAll("concern_mode");
-
-  // Stub only: a future live release would POST this payload to a lightweight review endpoint.
-  const draftSubmission = {
-    submission_type: formData.get("submission_type"),
-    category: formData.get("category"),
-    location_text: formData.get("location_text"),
-    latitude: formData.get("latitude") || null,
-    longitude: formData.get("longitude") || null,
-    description: formData.get("description"),
-    desired_destination: formData.get("desired_destination"),
-    additional_notes: formData.get("additional_notes"),
-    concern_mode: concernModes,
-    review_status: "under_review",
-  };
-
-  elements.reportFeedback.textContent =
-    `Prototype capture recorded for review: ${draftSubmission.location_text || "location not specified"}. A live release could send this draft to Google Sheets, Airtable, or another lightweight review tool.`;
-  elements.reportForm.reset();
-  elements.reportLatitude.value = "";
-  elements.reportLongitude.value = "";
-  clearCaptureMarker();
-  resetCoordinateCapture();
-}
-
 function getResidentCategoryMeta(record) {
   if (record.submission_type === "destination_request") {
     return DESTINATION_CATEGORIES[record.category] || {
@@ -1110,18 +957,10 @@ function ensureLeafletAvailable() {
 
 function showMapFailure() {
   elements.mapStatus.hidden = false;
-  elements.captureMapPoint.disabled = true;
-  elements.captureStatus.textContent =
-    "Map click capture is unavailable until the interactive map loads.";
 }
 
 function hideMapFailure() {
   elements.mapStatus.hidden = true;
-  elements.captureMapPoint.disabled = false;
-  if (!appState.capturePending) {
-    elements.captureStatus.textContent =
-      "Coordinates are optional. Use map click capture to place the report directly on the map.";
-  }
 }
 
 function escapeHtml(value) {

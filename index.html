@@ -71,11 +71,9 @@
           </p>
         </div>
         <div class="future-input-actions">
-          <button type="button" class="future-button future-button-live" id="open-report-drawer">
-            Report a Location
-          </button>
+          <a href="survey.html" class="future-button future-button-live">Open Survey Mode</a>
           <p class="subdued">
-            Prototype only. This flow demonstrates structure and review logic; it is not yet collecting live public submissions.
+            Survey Mode prepares the project for April intake by guiding residents toward specific, reviewable submissions.
           </p>
         </div>
       </section>
@@ -176,109 +174,6 @@
         </section>
       </main>
     </div>
-
-    <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
-    <div class="capture-banner" id="capture-banner" hidden aria-live="polite">
-      <p class="capture-banner-copy">
-        Map capture is active. Click once on the map to set the report location.
-      </p>
-      <button type="button" class="drawer-close" id="cancel-map-capture">
-        Cancel capture
-      </button>
-    </div>
-    <aside class="report-drawer" id="report-drawer" aria-hidden="true" aria-labelledby="report-drawer-title">
-      <div class="report-drawer-header">
-        <div>
-          <p class="eyebrow">Prototype Intake</p>
-          <h2 id="report-drawer-title">Report a Location</h2>
-        </div>
-        <button type="button" class="drawer-close" id="close-report-drawer" aria-label="Close report panel">
-          Close
-        </button>
-      </div>
-      <p class="panel-subtitle">
-        This is a static prototype of a future review workflow. Submissions shown here are not yet being stored live.
-      </p>
-      <form id="report-form" class="report-form">
-        <label class="field">
-          <span class="field-label">Submission type</span>
-          <select name="submission_type" required>
-            <option value="hotspot">Hotspot report</option>
-            <option value="destination_request">Destination request</option>
-          </select>
-        </label>
-
-        <label class="field">
-          <span class="field-label">Issue type</span>
-          <select name="category" required>
-            <option value="sidewalk_gap">Sidewalk gap</option>
-            <option value="unsafe_crossing">Unsafe crossing</option>
-            <option value="visibility_issue">Visibility issue</option>
-            <option value="speeding_concern">Speeding concern</option>
-            <option value="accessibility_barrier">Accessibility barrier</option>
-            <option value="general_hotspot">General hotspot</option>
-            <option value="park">Park access request</option>
-            <option value="school">School access request</option>
-            <option value="trail_access">Trail access request</option>
-            <option value="civic">Civic destination request</option>
-            <option value="business">Business area request</option>
-          </select>
-        </label>
-
-        <label class="field">
-          <span class="field-label">Nearby street or location</span>
-          <input type="text" name="location_text" placeholder="Example: Hanover Ave near Monroe St" required />
-        </label>
-
-        <div class="field">
-          <div class="field-row">
-            <span class="field-label">Map location</span>
-            <button type="button" class="text-button" id="capture-map-point">
-              Capture from map click
-            </button>
-          </div>
-          <div class="coordinate-grid">
-            <input type="text" name="latitude" id="report-latitude" placeholder="Latitude" inputmode="decimal" />
-            <input type="text" name="longitude" id="report-longitude" placeholder="Longitude" inputmode="decimal" />
-          </div>
-          <p class="field-help" id="capture-status">
-            Coordinates are optional. Use map click capture later for a live workflow.
-          </p>
-        </div>
-
-        <label class="field">
-          <span class="field-label">Issue description</span>
-          <textarea name="description" rows="4" placeholder="Describe the location and why it feels difficult, unsafe, or incomplete." required></textarea>
-        </label>
-
-        <label class="field">
-          <span class="field-label">Desired destination (optional)</span>
-          <input type="text" name="desired_destination" placeholder="Example: Woodland School or Frelinghuysen Arboretum" />
-        </label>
-
-        <fieldset class="field fieldset-reset">
-          <legend class="field-label">Concern mode</legend>
-          <div class="checkbox-grid">
-            <label class="checkbox-card"><input type="checkbox" name="concern_mode" value="walking" /> <span>Walking</span></label>
-            <label class="checkbox-card"><input type="checkbox" name="concern_mode" value="biking" /> <span>Biking</span></label>
-            <label class="checkbox-card"><input type="checkbox" name="concern_mode" value="accessibility" /> <span>Accessibility</span></label>
-            <label class="checkbox-card"><input type="checkbox" name="concern_mode" value="safety" /> <span>Safety</span></label>
-          </div>
-        </fieldset>
-
-        <label class="field">
-          <span class="field-label">Additional notes (optional)</span>
-          <textarea name="additional_notes" rows="3" placeholder="Optional notes about walking, biking, accessibility, or safety concerns."></textarea>
-        </label>
-
-        <div class="drawer-footer">
-          <button type="submit" class="future-button future-button-live">Submit for Review</button>
-          <p class="field-help" id="report-feedback">
-            Prototype only. A live release could later route this form to Google Sheets, Airtable, or another lightweight review tool.
-          </p>
-        </div>
-      </form>
-    </aside>
 
     <noscript>
       <div class="noscript-banner">

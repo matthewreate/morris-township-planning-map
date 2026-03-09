@@ -5,12 +5,15 @@ Static Leaflet prototype for reviewing Morris Township walkability and bikeabili
 ## File Structure
 
 - `index.html` sets up the page shell, sidebar sections, and Leaflet map container.
+- `survey.html` provides the guided Survey Mode page for the April intake phase.
 - `styles.css` contains the responsive layout and the civic/editorial visual styling.
 - `script.js` loads the local GeoJSON files, initializes the Leaflet map, and manages filters, layer toggles, the visible-hotspots list, popups, and the detail panel.
+- `survey.js` manages the Survey Mode map, form switching, map-click capture, and prototype confirmation flow.
 - `vendor/leaflet/` stores a local copy of Leaflet JS/CSS and image assets so the live map does not depend on a third-party CDN for bootstrap.
 - `data/hotspots.geojson` stores the TAC hotspot points normalized into the project taxonomy.
 - `data/destinations.geojson` stores curated reference destinations used to interpret hotspot demand and travel patterns.
 - `data/context-lines.geojson` stores sidewalk, trail, crosswalk, and township-border linework for subdued map context.
+- `data/survey-sample-submissions.json` stores mock survey-phase entries used by the Survey Mode page.
 - `Incoming Data/*.kmz` contains the raw KMZ layer exports used to assemble the local planning data.
 
 ## Local Preview
@@ -58,6 +61,16 @@ This phase adds a static prototype of a future resident-input workflow. The publ
 The intended next live step is to connect the front-end submission form to a lightweight review pipeline such as Google Apps Script to Google Sheets. In that setup, new reports would enter with `review_status=under_review`, staff would review them outside the public map, and approved records could later be exported back into the site data.
 
 The map is meant to be read in a clear hierarchy: official planning data forms the current working base, resident submissions remain separate and under review, and context layers support orientation rather than equal evidentiary weight.
+
+## Survey Mode
+
+`survey.html` is the guided intake page for the April survey phase. It is intentionally distinct from the official planning viewer in `index.html`.
+
+Survey Mode:
+- collects two structured types of resident input: trouble spots and destination connections
+- supports map-assisted point capture or typed location text
+- frames all responses as `under_review`
+- uses `data/survey-sample-submissions.json` as a prototype sample layer rather than live public storage
 
 ## Easiest Next Steps
 

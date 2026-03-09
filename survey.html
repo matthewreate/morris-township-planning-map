@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Morris Township Walking and Biking Survey</title>
+    <meta
+      name="description"
+      content="A guided survey page for collecting structured walking and biking input in Morris Township, New Jersey."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="survey-page">
+    <div class="page-shell">
+      <header class="page-header">
+        <a href="index.html" class="survey-back-link">Back to Planning Map</a>
+        <div class="survey-intro">
+          <p class="eyebrow">Survey Mode</p>
+          <h1>Morris Township Walking and Biking Survey</h1>
+          <p class="lede">
+            This survey page is designed for the April input phase. It helps residents
+            describe specific trouble spots and destination connections in a format the
+            planning group can review and map more clearly.
+          </p>
+          <p class="masthead-note survey-intro-note">
+            Survey responses collected here remain under review. They do not appear as
+            official planning records until the working group has reviewed them.
+          </p>
+        </div>
+      </header>
+
+      <section class="panel survey-guidance" aria-labelledby="survey-guidance-title">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">What to Report</p>
+            <h2 id="survey-guidance-title">Specific locations and useful travel needs are more valuable than broad complaints.</h2>
+          </div>
+        </div>
+        <div class="survey-guidance-grid">
+          <section>
+            <h3 class="legend-group-title">Two Input Paths</h3>
+            <ul class="survey-list">
+              <li><strong>Trouble spots</strong>: report a sidewalk gap, crossing problem, visibility issue, speeding concern, or accessibility barrier at a specific location.</li>
+              <li><strong>Destination connections</strong>: describe where you want to get to, what area you are starting from, and what gets in the way.</li>
+            </ul>
+          </section>
+          <section>
+            <h3 class="legend-group-title">How to Answer Well</h3>
+            <ul class="survey-example-list">
+              <li><strong>Unsafe crossing at Columbia Turnpike near Woodland School</strong></li>
+              <li><strong>Need safer walking route from neighborhood to Kings</strong></li>
+              <li><strong>Missing sidewalk segment on this block</strong></li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <main class="survey-workspace">
+        <section class="panel survey-map-card">
+          <div class="map-card-header">
+            <div>
+              <p class="eyebrow">Survey Map</p>
+              <h2>Place Your Input on the Map</h2>
+              <p class="panel-subtitle">
+                Sample under-review survey records are shown for orientation. Official hotspot points remain visible but subdued.
+              </p>
+            </div>
+          </div>
+          <div class="map-stage">
+            <div id="survey-map" aria-label="Interactive Morris Township survey map"></div>
+            <div class="map-status" id="survey-map-status" hidden role="status" aria-live="polite">
+              <p class="map-status-copy">
+                The survey map could not be loaded right now. You can still describe a location manually below.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel survey-form-panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Survey Intake</p>
+              <h2>Share a Specific Location</h2>
+              <p class="panel-subtitle">
+                This is still a prototype workflow. Responses are framed as under-review survey entries.
+              </p>
+            </div>
+          </div>
+
+          <div class="survey-confirmation" id="survey-confirmation" hidden>
+            <h3 class="legend-group-title">Prototype Confirmation</h3>
+            <p class="survey-helper" id="survey-confirmation-text"></p>
+          </div>
+
+          <form id="survey-form" class="survey-form">
+            <label class="field">
+              <span class="field-label">Submission type</span>
+              <select id="submission-type" name="submission_type" required>
+                <option value="hotspot">Report a trouble spot</option>
+                <option value="destination_request">Request a destination connection</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field-label" id="category-label">Issue type</span>
+              <select id="category-select" name="category" required></select>
+            </label>
+
+            <label class="field">
+              <span class="field-label" id="location-label">Nearby street or location</span>
+              <input id="location-text" type="text" name="location_text" placeholder="Example: Columbia Turnpike near Woodland School" required />
+            </label>
+
+            <label class="field" id="origin-area-field" hidden>
+              <span class="field-label">From what area</span>
+              <input id="origin-area" type="text" name="origin_area" placeholder="Example: neighborhood streets south of Woodland Ave" />
+            </label>
+
+            <label class="field" id="desired-destination-field" hidden>
+              <span class="field-label">Where do you want to get to</span>
+              <input id="desired-destination" type="text" name="desired_destination" placeholder="Example: Kings, Woodland School, or Patriots' Path access" />
+            </label>
+
+            <div class="field">
+              <div class="field-row">
+                <span class="field-label">Map location</span>
+                <button type="button" class="text-button" id="survey-capture-map-point">
+                  Capture from map click
+                </button>
+              </div>
+              <div class="coordinate-grid">
+                <input id="survey-latitude" type="text" name="latitude" placeholder="Latitude" inputmode="decimal" />
+                <input id="survey-longitude" type="text" name="longitude" placeholder="Longitude" inputmode="decimal" />
+              </div>
+              <p class="field-help" id="survey-capture-status">
+                Coordinates are optional. You can type a location or place a point directly on the map.
+              </p>
+            </div>
+
+            <label class="field">
+              <span class="field-label" id="description-label">Problem description</span>
+              <textarea id="description-text" name="description" rows="4" placeholder="Describe the location and what feels difficult, unsafe, or incomplete." required></textarea>
+            </label>
+
+            <fieldset class="field fieldset-reset">
+              <legend class="field-label">Concern mode</legend>
+              <div class="checkbox-grid">
+                <label class="checkbox-card"><input type="checkbox" name="concern_mode" value="walking" /> <span>Walking</span></label>
+                <label class="checkbox-card"><input type="checkbox" name="concern_mode" value="biking" /> <span>Biking</span></label>
+                <label class="checkbox-card"><input type="checkbox" name="concern_mode" value="accessibility" /> <span>Accessibility</span></label>
+                <label class="checkbox-card"><input type="checkbox" name="concern_mode" value="safety" /> <span>Safety</span></label>
+              </div>
+            </fieldset>
+
+            <label class="field">
+              <span class="field-label">Additional notes (optional)</span>
+              <textarea name="additional_notes" rows="3" placeholder="Optional notes about walking, biking, accessibility, or safety concerns."></textarea>
+            </label>
+
+            <div class="drawer-footer">
+              <button type="submit" class="future-button future-button-live">Submit Survey Entry</button>
+              <p class="field-help">
+                Prototype only. A live release could later route this form into a review queue such as Google Sheets.
+              </p>
+            </div>
+          </form>
+        </aside>
+      </main>
+
+      <section class="panel survey-under-review" aria-labelledby="under-review-title">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Under Review</p>
+            <h2 id="under-review-title">Survey responses remain distinct from the official planning map.</h2>
+          </div>
+        </div>
+        <p class="survey-helper">
+          The current planning map reflects official working-group data. Survey responses collected during this phase are under review and do not instantly become official records.
+        </p>
+        <p class="survey-helper">
+          This separation helps the planning group preserve trust in the official map while still gathering useful location-specific input for April survey analysis and workshop preparation.
+        </p>
+      </section>
+    </div>
+
+    <div class="capture-banner" id="survey-capture-banner" hidden aria-live="polite">
+      <p class="capture-banner-copy">
+        Map capture is active. Click once on the survey map to place the location.
+      </p>
+      <button type="button" class="drawer-close" id="survey-cancel-capture">
+        Cancel capture
+      </button>
+    </div>
+
+    <noscript>
+      <div class="noscript-banner">
+        JavaScript is required to load the interactive survey map.
+      </div>
+    </noscript>
+
+    <script src="vendor/leaflet/leaflet.js"></script>
+    <script src="survey.js"></script>
+  </body>
+</html>
