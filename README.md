@@ -2,10 +2,14 @@
 
 Static Leaflet prototype for reviewing Morris Township walkability and bikeability issues with a small working group. The site is designed to run as a lightweight GitHub Pages project with no build step and no backend.
 
+The project now has two clearly distinct public-facing surfaces:
+- `index.html` is the official planning reference used for working-group review and orientation.
+- `survey.html` is the April survey-phase intake tool, where responses remain under review and separate from the official planning map.
+
 ## File Structure
 
-- `index.html` sets up the page shell, sidebar sections, and Leaflet map container.
-- `survey.html` provides the guided Survey Mode page for the April intake phase.
+- `index.html` sets up the official planning-view page shell, sidebar sections, and Leaflet map container.
+- `survey.html` provides the guided Survey Mode intake page for the April survey phase.
 - `styles.css` contains the responsive layout and the civic/editorial visual styling.
 - `script.js` loads the local GeoJSON files, initializes the Leaflet map, and manages filters, layer toggles, the visible-hotspots list, popups, and the detail panel.
 - `survey.js` manages the Survey Mode map, form switching, map-click capture, and prototype confirmation flow.
@@ -71,6 +75,10 @@ Survey Mode:
 - supports map-assisted point capture or typed location text
 - frames all responses as `under_review`
 - uses `data/survey-sample-submissions.json` as a prototype sample layer rather than live public storage
+
+The planning viewer and Survey Mode are intentionally labeled as different phases of the same process:
+- `Official Planning View` = working-group reference and orientation
+- `Survey Intake View` = April resident input held under review
 
 ## Easiest Next Steps
 
