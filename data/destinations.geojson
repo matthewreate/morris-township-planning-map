@@ -1,0 +1,113 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.505213,
+          40.804052
+        ]
+      },
+      "properties": {
+        "id": "destination-01",
+        "title": "Fosterfields Living Historical Farm",
+        "category": "park",
+        "description": "Regional destination with farm grounds, walking access, and event programming.",
+        "latitude": 40.804052,
+        "longitude": -74.505213
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.450546,
+          40.800675
+        ]
+      },
+      "properties": {
+        "id": "destination-02",
+        "title": "Frelinghuysen Arboretum",
+        "category": "park",
+        "description": "Major public garden and education destination with strong pedestrian interest.",
+        "latitude": 40.800675,
+        "longitude": -74.450546
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.461776,
+          40.780391
+        ]
+      },
+      "properties": {
+        "id": "destination-03",
+        "title": "Morris Township Municipal Building",
+        "category": "civic",
+        "description": "Town civic center and a useful anchor for sidewalk and crossing discussions.",
+        "latitude": 40.780391,
+        "longitude": -74.461776
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.438936,
+          40.793962
+        ]
+      },
+      "properties": {
+        "id": "destination-04",
+        "title": "Woodland School",
+        "category": "school",
+        "description": "Representative school destination used to discuss child walking routes and crossings.",
+        "latitude": 40.793962,
+        "longitude": -74.438936
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.495112,
+          40.790294
+        ]
+      },
+      "properties": {
+        "id": "destination-05",
+        "title": "Traction Line Recreation Trail Access",
+        "category": "trail_access",
+        "description": "Placeholder trail access point showing how greenway destinations can be highlighted.",
+        "latitude": 40.790294,
+        "longitude": -74.495112
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.452888,
+          40.787828
+        ]
+      },
+      "properties": {
+        "id": "destination-06",
+        "title": "Madison Avenue Retail Cluster",
+        "category": "business",
+        "description": "Representative neighborhood-serving business area included as a placeholder destination.",
+        "latitude": 40.787828,
+        "longitude": -74.452888
+      }
+    }
+  ]
+}

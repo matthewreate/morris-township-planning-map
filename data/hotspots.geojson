@@ -1,0 +1,687 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4649052,
+          40.8086762
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-01",
+        "title": "Hanover Ave by Monroe St",
+        "category": "sidewalk_gap",
+        "description": "Gap between Monroe and crosswalk to Hannover Crossroads",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.8086762,
+        "longitude": -74.4649052
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4901223,
+          40.820734
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-02",
+        "title": "Delmar",
+        "category": "sidewalk_gap",
+        "description": "gaps in sidewalks between Briant Ave and Mill Rd",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.820734,
+        "longitude": -74.4901223
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.5161254,
+          40.8195896
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-03",
+        "title": "Ketch Rd - Lake Rd intersection",
+        "category": "sidewalk_gap",
+        "description": "Sidewalk gaps from intersection in all three directions",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.8195896,
+        "longitude": -74.5161254
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.5020636,
+          40.800842
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-04",
+        "title": "Kahdena Rd",
+        "category": "sidewalk_gap",
+        "description": "No safe walking route between Mendham Rd and Deborah Dr",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.800842,
+        "longitude": -74.5020636
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4499691,
+          40.8005586
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-05",
+        "title": "Whippany Rd",
+        "category": "sidewalk_gap",
+        "description": "Gap between Woodcrest and Woodruff Rd",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.8005586,
+        "longitude": -74.4499691
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4479586,
+          40.7952568
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-06",
+        "title": "Normandy Heights Rd",
+        "category": "sidewalk_gap",
+        "description": "Sidewalk gap between Columbia Rd and Morris Museum entrance",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.7952568,
+        "longitude": -74.4479586
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4799593,
+          40.7747304
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-07",
+        "title": "James St",
+        "category": "sidewalk_gap",
+        "description": "Complete sidewalk extension from Cottonwood Rd, across 287, to Southgate Pkwy",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.7747304,
+        "longitude": -74.4799593
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.438996,
+          40.7937799
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-08",
+        "title": "Columbia Turnpike",
+        "category": "sidewalk_gap",
+        "description": "No sidewalks connecting Lohman, Wyndmoor and Normandy Heights Rd allowing access to crosswalk to Columbia Park walking paths",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.7937799,
+        "longitude": -74.438996
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4521807,
+          40.7845244
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-09",
+        "title": "Madison Ave",
+        "category": "sidewalk_gap",
+        "description": "Sidewalk gap SE of Kahn Rd interrupting easy pedestrian access to train station",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.7845244,
+        "longitude": -74.4521807
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4939706,
+          40.7837447
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-10",
+        "title": "Mt Kemble Ave",
+        "category": "sidewalk_gap",
+        "description": "Sidewalks needed fromByron Ave to Frederick Pl",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.7837447,
+        "longitude": -74.4939706
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4971838,
+          40.7909259
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-11",
+        "title": "Western Ave",
+        "category": "sidewalk_gap",
+        "description": "Sidewalks needed from Locust to Rolling Hill Dr (at least)",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.7909259,
+        "longitude": -74.4971838
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.463065,
+          40.7805215
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-12",
+        "title": "Woodland Ave",
+        "category": "sidewalk_gap",
+        "description": "Old Glen to Municipal Building sidewalk project is in process",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.7805215,
+        "longitude": -74.463065
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4350411,
+          40.7944854
+        ]
+      },
+      "properties": {
+        "id": "sidewalk-gaps-13",
+        "title": "Park Ave & Columbia",
+        "category": "sidewalk_gap",
+        "description": "Sidewalk missing from Columbia to Cromwell neighborhood",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Sidewalk Gaps",
+        "latitude": 40.7944854,
+        "longitude": -74.4350411
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.5043203,
+          40.803197
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-01",
+        "title": "Kahdena Rd at Fosterfields",
+        "category": "unsafe_crossing",
+        "description": "Crosswalk for pedestrian access to Fosterfields",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.803197,
+        "longitude": -74.5043203
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.5159178,
+          40.8196918
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-02",
+        "title": "Ketch Rd - Lake Rd intersection",
+        "category": "unsafe_crossing",
+        "description": "Crosswalks recommended",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.8196918,
+        "longitude": -74.5159178
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4624535,
+          40.7800503
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-03",
+        "title": "Woodland Ave",
+        "category": "unsafe_crossing",
+        "description": "Crosswalk at Old Glen part of Old Glen to the Municipal Building sidewalk project",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.7800503,
+        "longitude": -74.4624535
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4545839,
+          40.7868214
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-04",
+        "title": "Madison Ave",
+        "category": "unsafe_crossing",
+        "description": "Crosswalk near Pitney Place to serve bus stops",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.7868214,
+        "longitude": -74.4545839
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.450449,
+          40.8003941
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-05",
+        "title": "Whippany Rd",
+        "category": "unsafe_crossing",
+        "description": "Crosswalk at Woodruff for access to the Arboretum",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.8003941,
+        "longitude": -74.450449
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.5045837,
+          40.8156869
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-06",
+        "title": "Inamere Rd",
+        "category": "unsafe_crossing",
+        "description": "Enhanced crosswalk (flashing light?) at Lake Rd intersection",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.8156869,
+        "longitude": -74.5045837
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4815458,
+          40.8217902
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-07",
+        "title": "Speedwell Ave",
+        "category": "unsafe_crossing",
+        "description": "Restriping and flashing lights on crosswalk at Hanover Ave",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.8217902,
+        "longitude": -74.4815458
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4820179,
+          40.820011
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-08",
+        "title": "Speedwell Ave",
+        "category": "unsafe_crossing",
+        "description": "Restriping and flashing lights on crosswalk at Kennedy Rd",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.820011,
+        "longitude": -74.4820179
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4550362,
+          40.7900371
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-09",
+        "title": "Normandy Parkway",
+        "category": "unsafe_crossing",
+        "description": "Enhanced crosswalk (w/ solar powered crosswalk signs?) at Kenilworth intersection",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.7900371,
+        "longitude": -74.4550362
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4729212,
+          40.8068536
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-10",
+        "title": "Martin Luther King Ave",
+        "category": "unsafe_crossing",
+        "description": "Enhanced crosswalks at Jersey Ave, Walnut St and Highland Ave to improve pedestrian safety",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.8068536,
+        "longitude": -74.4729212
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.5013826,
+          40.7994742
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-11",
+        "title": "Kahdena & Rt 24",
+        "category": "unsafe_crossing",
+        "description": "Difficult Crossing, dangerous intersection",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.7994742,
+        "longitude": -74.5013826
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4478835,
+          40.7948046
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-12",
+        "title": "Normandy & Columbia",
+        "category": "unsafe_crossing",
+        "description": "Crosswalks exist but still dangerous, including car accidents",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.7948046,
+        "longitude": -74.4478835
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4796308,
+          40.7801864
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-13",
+        "title": "Nottingham & James",
+        "category": "unsafe_crossing",
+        "description": "Residents state crosswalks installed do help but cars still speed through, don't stop for pedestrians",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.7801864,
+        "longitude": -74.4796308
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4517018,
+          40.7858955
+        ]
+      },
+      "properties": {
+        "id": "crosswalk-improvements-14",
+        "title": "Kahn Rd & Traction line",
+        "category": "unsafe_crossing",
+        "description": "Resident reported hot spot, need to explore issues",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "Crosswalk Improvements",
+        "latitude": 40.7858955,
+        "longitude": -74.4517018
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4478574,
+          40.7696454
+        ]
+      },
+      "properties": {
+        "id": "general-hotspots-issues-01",
+        "title": "Kitchell Road Bends",
+        "category": "speeding_concern",
+        "description": "Unsafe speeds reported around bends",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "General Hotspots/ issues",
+        "latitude": 40.7696454,
+        "longitude": -74.4478574
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4565233,
+          40.7893104
+        ]
+      },
+      "properties": {
+        "id": "general-hotspots-issues-02",
+        "title": "Normandy & Madison",
+        "category": "unsafe_crossing",
+        "description": "Difficult intersection to navigate on foot and bike",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "General Hotspots/ issues",
+        "latitude": 40.7893104,
+        "longitude": -74.4565233
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4796011,
+          40.7734175
+        ]
+      },
+      "properties": {
+        "id": "general-hotspots-issues-03",
+        "title": "James St Over 287",
+        "category": "unsafe_crossing",
+        "description": "Cited as feeling dangerous for residents due to cars coming from multiple directions. Possible clearer paint or signage?",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "General Hotspots/ issues",
+        "latitude": 40.7734175,
+        "longitude": -74.4796011
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4944414,
+          40.794613
+        ]
+      },
+      "properties": {
+        "id": "general-hotspots-issues-04",
+        "title": "Locust & Center",
+        "category": "unsafe_crossing",
+        "description": "Dangerous Intersection, difficult to cross",
+        "status": "needs_review",
+        "source": "Neil TAC Hot Spots Map",
+        "notes": "",
+        "source_layer": "General Hotspots/ issues",
+        "latitude": 40.794613,
+        "longitude": -74.4944414
+      }
+    }
+  ]
+}
