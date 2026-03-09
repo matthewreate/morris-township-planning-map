@@ -34,7 +34,6 @@ body {
   min-height: 100%;
 }
 
-body.is-locked,
 body.is-drawer-open {
   overflow: hidden;
 }
@@ -58,50 +57,6 @@ label {
   width: min(1440px, calc(100% - 32px));
   margin: 0 auto;
   padding: 24px 0 32px;
-}
-
-.access-gate {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background:
-    linear-gradient(180deg, rgba(247, 242, 232, 0.84) 0%, rgba(244, 240, 231, 0.92) 100%),
-    rgba(244, 240, 231, 0.92);
-  backdrop-filter: blur(12px);
-  z-index: 1200;
-}
-
-.access-gate[hidden] {
-  display: none;
-}
-
-.access-gate-card {
-  width: min(560px, 100%);
-  padding: 28px 28px 26px;
-  border-radius: 24px;
-  border: 1px solid rgba(29, 42, 52, 0.1);
-  background: rgba(255, 252, 247, 0.96);
-  box-shadow: 0 24px 48px rgba(29, 42, 52, 0.16);
-}
-
-.gate-title {
-  margin: 0 0 14px;
-  font-size: clamp(2rem, 3vw, 3rem);
-  line-height: 0.98;
-}
-
-.gate-copy {
-  margin: 0 0 10px;
-  color: var(--muted);
-  line-height: 1.55;
-}
-
-.access-gate-form {
-  display: grid;
-  gap: 14px;
-  margin-top: 18px;
 }
 
 .page-header {
