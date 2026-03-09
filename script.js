@@ -118,11 +118,7 @@ const elements = {
   reviewLayerToggles: document.getElementById("review-layer-toggles"),
   visibleHotspots: document.getElementById("visible-hotspots"),
   detailPanel: document.getElementById("detail-panel"),
-  referenceStatus: document.getElementById("reference-status"),
-  referenceSymbols: document.getElementById("reference-symbols"),
-  referencePhase: document.getElementById("reference-phase"),
-  referenceContext: document.getElementById("reference-context"),
-  referenceReviewSummary: document.getElementById("reference-review-summary"),
+  referenceContent: document.getElementById("reference-content"),
   openReportDrawer: document.getElementById("open-report-drawer"),
   closeReportDrawer: document.getElementById("close-report-drawer"),
   drawerBackdrop: document.getElementById("drawer-backdrop"),
@@ -554,7 +550,7 @@ function renderMapReference() {
     `,
   ).join("");
 
-  elements.referenceStatus.innerHTML = `
+  elements.referenceContent.innerHTML = `
     <section class="legend-section">
       <h3 class="legend-group-title">Data Status</h3>
       <div class="legend-items">
@@ -576,9 +572,6 @@ function renderMapReference() {
         </div>
       </div>
     </section>
-  `;
-
-  elements.referenceSymbols.innerHTML = `
     <section class="legend-section">
       <h3 class="legend-group-title">Map Symbols</h3>
       <div>
@@ -598,17 +591,11 @@ function renderMapReference() {
         <div class="legend-items">${contextItems}</div>
       </div>
     </section>
-  `;
-
-  elements.referencePhase.innerHTML = `
     <section class="legend-section">
       <h3 class="legend-group-title">Use in This Phase</h3>
       <p class="legend-copy">Use this map to review known issues, compare them with destinations and context, and prepare survey and workshop questions.</p>
       <p class="legend-copy">Do not read it as a complete inventory of every walking or biking condition in the township.</p>
     </section>
-  `;
-
-  elements.referenceContext.innerHTML = `
     <section class="legend-section">
       <h3 class="legend-group-title">Map Context</h3>
       <p class="legend-copy">The central gray mask is a visual cue to de-emphasize Morristown for this Morris Township-focused discussion. It is not an official boundary.</p>
@@ -896,7 +883,7 @@ function renderReviewSummary(records) {
     }
   });
 
-  elements.referenceReviewSummary.innerHTML = `
+  elements.referenceContent.insertAdjacentHTML("beforeend", `
     <section class="summary-group">
       <h3 class="summary-title">Review Summary</h3>
       <p class="legend-copy">Prototype planning-group view of recurring resident input now under review.</p>
@@ -904,7 +891,7 @@ function renderReviewSummary(records) {
     ${renderSummaryGroup("Counts by issue", categoryCounts, formatCategoryLabel)}
     ${renderSummaryGroup("Repeated locations", locationCounts, null)}
     ${renderSummaryGroup("Requested destinations", destinationCounts, null)}
-  `;
+  `);
 }
 
 function renderSummaryGroup(title, counts, formatter) {

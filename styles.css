@@ -366,20 +366,10 @@ h2 {
   margin-bottom: 0;
 }
 
-.reference-grid {
+.reference-flow {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px 24px;
-}
-
-.reference-block {
-  min-width: 0;
-  display: grid;
-  gap: 12px;
-}
-
-.reference-block-wide {
-  grid-column: 1 / -1;
+  gap: 22px;
+  max-width: 54rem;
 }
 
 .legend-section {
@@ -848,8 +838,7 @@ h2 {
 @media (max-width: 1040px) {
   .future-input-band,
   .masthead,
-  .workspace,
-  .reference-grid {
+  .workspace {
     grid-template-columns: 1fr;
   }
 
@@ -871,10 +860,6 @@ h2 {
     height: auto;
     overflow: visible;
     padding-right: 0;
-  }
-
-  .reference-block-wide {
-    grid-column: auto;
   }
 
   #map {
