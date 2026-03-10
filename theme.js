@@ -13,7 +13,7 @@
   }
 
   function getPreferredTheme() {
-    return mediaQuery.matches ? DARK : LIGHT;
+    return LIGHT;
   }
 
   function getTheme() {

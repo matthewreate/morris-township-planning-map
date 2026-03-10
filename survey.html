@@ -12,9 +12,7 @@
       (() => {
         try {
           const storedTheme = localStorage.getItem("morris-township-theme");
-          const preferredTheme =
-            storedTheme ||
-            (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+          const preferredTheme = storedTheme || "light";
           document.documentElement.dataset.theme = preferredTheme;
         } catch (_error) {
           document.documentElement.dataset.theme = "light";
