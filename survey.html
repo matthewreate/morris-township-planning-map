@@ -8,6 +8,19 @@
       name="description"
       content="A guided survey page for collecting structured walking, rolling, and cycling input in Morris Township, New Jersey."
     />
+    <script>
+      (() => {
+        try {
+          const storedTheme = localStorage.getItem("morris-township-theme");
+          const preferredTheme =
+            storedTheme ||
+            (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+          document.documentElement.dataset.theme = preferredTheme;
+        } catch (_error) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -43,7 +56,12 @@
             This page collects route requests and trouble-spot reports for review. It does not replace the official planning map.
           </p>
         </div>
-        <a href="index.html" class="process-link">Back to Planning Map</a>
+        <div class="process-actions">
+          <a href="index.html" class="process-link">Back to Planning Map</a>
+          <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+            <span data-theme-label>Dark mode</span>
+          </button>
+        </div>
       </section>
 
       <section class="panel survey-guidance" aria-labelledby="survey-guidance-title">
@@ -222,6 +240,7 @@
     </noscript>
 
     <script src="vendor/leaflet/leaflet.js"></script>
+    <script src="theme.js"></script>
     <script src="survey.js"></script>
   </body>
 </html>

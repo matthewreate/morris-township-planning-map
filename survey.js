@@ -30,6 +30,8 @@ const DESTINATION_MODES = [
 
 const surveyState = {
   map: null,
+  baseTileLayer: null,
+  labelTileLayer: null,
   capturePending: false,
   captureMarker: null,
   surveyRecords: [],
@@ -89,9 +91,11 @@ async function init() {
   }
 
   initializeMap();
+  applySurveyMapTheme();
   buildOfficialHotspots(hotspots.features);
   buildDestinationContext(destinations.features);
   buildSurveyRecords(surveyRecords);
+  window.addEventListener("morris-theme-change", applySurveyMapTheme);
 }
 
 async function loadGeoJSON(path) {
@@ -120,14 +124,16 @@ function initializeMap() {
     preferCanvas: true,
   });
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
+  const tileConfig = getTileConfig();
+
+  surveyState.baseTileLayer = L.tileLayer(tileConfig.baseUrl, {
     subdomains: "abcd",
     maxZoom: 19,
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
   }).addTo(map);
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png", {
+  surveyState.labelTileLayer = L.tileLayer(tileConfig.labelUrl, {
     subdomains: "abcd",
     maxZoom: 19,
     pane: "overlayPane",
@@ -474,6 +480,29 @@ function hideMapFailure() {
 function disableMapCapture(message) {
   elements.captureMapPoint.disabled = true;
   elements.captureStatus.textContent = message;
+}
+
+function applySurveyMapTheme() {
+  if (!surveyState.baseTileLayer || !surveyState.labelTileLayer) {
+    return;
+  }
+
+  const tileConfig = getTileConfig();
+  surveyState.baseTileLayer.setUrl(tileConfig.baseUrl);
+  surveyState.labelTileLayer.setUrl(tileConfig.labelUrl);
+}
+
+function getTileConfig() {
+  const isDarkTheme = document.documentElement.dataset.theme === "dark";
+  return isDarkTheme
+    ? {
+        baseUrl: "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+        labelUrl: "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
+      }
+    : {
+        baseUrl: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
+        labelUrl: "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+      };
 }
 
 function getSelectedModes() {

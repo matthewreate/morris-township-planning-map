@@ -95,6 +95,8 @@ const REVIEW_LAYER_GROUPS = [
 
 const appState = {
   map: null,
+  baseTileLayer: null,
+  labelTileLayer: null,
   hotspotEntries: [],
   destinationEntries: [],
   residentEntries: [],
@@ -148,6 +150,7 @@ async function init() {
   }
 
   initializeMap();
+  applyMapTheme();
   buildContextLayers(contextLines.features);
   buildDestinations(destinations.features);
   buildHotspots(hotspots.features);
@@ -155,6 +158,7 @@ async function init() {
   renderReviewSummary(residentSubmissions);
   addMorristownMask();
   appState.map.on("moveend", renderVisibleHotspotsList);
+  window.addEventListener("morris-theme-change", applyMapTheme);
   renderVisibleHotspotsList();
 }
 
@@ -182,14 +186,16 @@ function initializeMap() {
     preferCanvas: true,
   });
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
+  const tileConfig = getTileConfig();
+
+  appState.baseTileLayer = L.tileLayer(tileConfig.baseUrl, {
     subdomains: "abcd",
     maxZoom: 19,
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
   }).addTo(map);
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png", {
+  appState.labelTileLayer = L.tileLayer(tileConfig.labelUrl, {
     subdomains: "abcd",
     maxZoom: 19,
     pane: "overlayPane",
@@ -967,6 +973,29 @@ function ensureLeafletAvailable() {
 
   showMapFailure();
   return false;
+}
+
+function applyMapTheme() {
+  if (!appState.baseTileLayer || !appState.labelTileLayer) {
+    return;
+  }
+
+  const tileConfig = getTileConfig();
+  appState.baseTileLayer.setUrl(tileConfig.baseUrl);
+  appState.labelTileLayer.setUrl(tileConfig.labelUrl);
+}
+
+function getTileConfig() {
+  const isDarkTheme = document.documentElement.dataset.theme === "dark";
+  return isDarkTheme
+    ? {
+        baseUrl: "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+        labelUrl: "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
+      }
+    : {
+        baseUrl: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
+        labelUrl: "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+      };
 }
 
 function showMapFailure() {

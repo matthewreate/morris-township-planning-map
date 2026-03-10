@@ -8,6 +8,19 @@
       name="description"
       content="A lightweight planning map prototype for discussing walkability and bikeability priorities in Morris Township, New Jersey."
     />
+    <script>
+      (() => {
+        try {
+          const storedTheme = localStorage.getItem("morris-township-theme");
+          const preferredTheme =
+            storedTheme ||
+            (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+          document.documentElement.dataset.theme = preferredTheme;
+        } catch (_error) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -64,7 +77,12 @@
             This page reflects official planning data and reference context. Survey responses are reviewed separately before they enter the planning record.
           </p>
         </div>
-        <a href="survey.html" class="process-link">Go to Survey Mode</a>
+        <div class="process-actions">
+          <a href="survey.html" class="process-link">Go to Survey Mode</a>
+          <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+            <span data-theme-label>Dark mode</span>
+          </button>
+        </div>
       </section>
 
       <section class="future-input-band panel" aria-labelledby="future-input-title">
@@ -193,6 +211,7 @@
     </noscript>
 
     <script src="vendor/leaflet/leaflet.js"></script>
+    <script src="theme.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
