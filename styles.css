@@ -342,11 +342,18 @@ h2 {
   gap: 10px;
 }
 
+.tool-group-accordion {
+  gap: 0;
+}
+
 .tool-group-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  cursor: pointer;
+  list-style: none;
+  padding: 0;
 }
 
 .tool-group-header h3 {
@@ -355,6 +362,30 @@ h2 {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.tool-group-header::-webkit-details-marker {
+  display: none;
+}
+
+.tool-group-header::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 120ms ease;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.tool-group-accordion[open] > .tool-group-header::after {
+  transform: rotate(-135deg);
+}
+
+.tool-group-body {
+  padding-top: 10px;
 }
 
 .control-list {
