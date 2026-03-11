@@ -414,22 +414,27 @@ function renderCategoryFilters(features) {
   elements.categoryFilters.innerHTML = "";
 
   HOTSPOT_CATEGORIES.forEach((category) => {
-    const wrapper = document.createElement("label");
-    wrapper.className = "control-item";
+    const wrapper = document.createElement("details");
+    wrapper.className = "control-item control-item-collapsible";
     wrapper.innerHTML = `
-      <span class="control-main">
-        <input type="checkbox" name="hotspot-category" value="${category.id}" checked />
-        <span class="swatch" style="background:${category.color}"></span>
-        <span class="control-text">
-          <span class="control-label">${category.label}</span>
-          <span class="control-hint">${category.description}</span>
+      <summary class="control-summary">
+        <span class="control-main">
+          <input type="checkbox" name="hotspot-category" value="${category.id}" checked />
+          <span class="swatch" style="background:${category.color}"></span>
+          <span class="control-text">
+            <span class="control-label">${category.label}</span>
+          </span>
         </span>
-      </span>
-      <span class="pill">${counts[category.id] || 0}</span>
+        <span class="pill">${counts[category.id] || 0}</span>
+      </summary>
+      <div class="control-body">
+        <p class="control-hint">${category.description}</p>
+      </div>
     `;
     elements.categoryFilters.append(wrapper);
   });
 
+  bindControlToggleGuards(elements.categoryFilters);
   elements.categoryFilters.addEventListener("change", () => {
     const checkedValues = Array.from(
       elements.categoryFilters.querySelectorAll("input:checked"),
@@ -444,21 +449,26 @@ function renderLayerToggles() {
   elements.layerToggles.innerHTML = "";
 
   CONTEXT_GROUPS.forEach((group) => {
-    const wrapper = document.createElement("label");
-    wrapper.className = "control-item";
+    const wrapper = document.createElement("details");
+    wrapper.className = "control-item control-item-collapsible";
     wrapper.innerHTML = `
-      <span class="control-main">
-        <input type="checkbox" name="context-group" value="${group.id}" checked />
-        <span class="swatch-line" style="border-top-color:${group.color}"></span>
-        <span class="control-text">
-          <span class="control-label">${group.label}</span>
-          <span class="control-hint">${group.description}</span>
+      <summary class="control-summary">
+        <span class="control-main">
+          <input type="checkbox" name="context-group" value="${group.id}" checked />
+          <span class="swatch-line" style="border-top-color:${group.color}"></span>
+          <span class="control-text">
+            <span class="control-label">${group.label}</span>
+          </span>
         </span>
-      </span>
+      </summary>
+      <div class="control-body">
+        <p class="control-hint">${group.description}</p>
+      </div>
     `;
     elements.layerToggles.append(wrapper);
   });
 
+  bindControlToggleGuards(elements.layerToggles);
   elements.layerToggles.addEventListener("change", () => {
     const checkedValues = Array.from(
       elements.layerToggles.querySelectorAll("input:checked"),
@@ -484,21 +494,26 @@ function renderReviewLayerToggles() {
   elements.reviewLayerToggles.innerHTML = "";
 
   REVIEW_LAYER_GROUPS.forEach((group) => {
-    const wrapper = document.createElement("label");
-    wrapper.className = "control-item";
+    const wrapper = document.createElement("details");
+    wrapper.className = "control-item control-item-collapsible";
     wrapper.innerHTML = `
-      <span class="control-main">
-        <input type="checkbox" name="review-layer" value="${group.id}" checked />
-        <span class="swatch" style="background:#ffffff; box-shadow: 0 0 0 2px ${group.color}"></span>
-        <span class="control-text">
-          <span class="control-label">${group.label}</span>
-          <span class="control-hint">${group.description}</span>
+      <summary class="control-summary">
+        <span class="control-main">
+          <input type="checkbox" name="review-layer" value="${group.id}" checked />
+          <span class="swatch" style="background:#ffffff; box-shadow: 0 0 0 2px ${group.color}"></span>
+          <span class="control-text">
+            <span class="control-label">${group.label}</span>
+          </span>
         </span>
-      </span>
+      </summary>
+      <div class="control-body">
+        <p class="control-hint">${group.description}</p>
+      </div>
     `;
     elements.reviewLayerToggles.append(wrapper);
   });
 
+  bindControlToggleGuards(elements.reviewLayerToggles);
   elements.reviewLayerToggles.addEventListener("change", () => {
     const checkedValues = Array.from(
       elements.reviewLayerToggles.querySelectorAll("input:checked"),
@@ -514,6 +529,14 @@ function renderReviewLayerToggles() {
       appState.residentLayerGroup.addTo(appState.map);
     } else {
       appState.map.removeLayer(appState.residentLayerGroup);
+    }
+  });
+}
+
+function bindControlToggleGuards(container) {
+  container.addEventListener("click", (event) => {
+    if (event.target instanceof HTMLInputElement) {
+      event.stopPropagation();
     }
   });
 }
