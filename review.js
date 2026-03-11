@@ -38,6 +38,7 @@ const reviewState = {
   detailCache: new Map(),
   repeatMap: new Map(),
   selectedId: null,
+  submissionBounds: null,
 };
 
 const elements = {
@@ -80,6 +81,7 @@ async function init() {
 
   populateCategoryFilter(reviewState.allRecords);
   populateStatusFilter(reviewState.allRecords);
+  initializeFilterDefaults();
   renderSnapshot(reviewState.allRecords);
 
   if (!ensureLeafletAvailable()) {
@@ -91,6 +93,7 @@ async function init() {
   applyReviewMapTheme();
   buildOfficialHotspots(hotspots.features);
   buildSubmissionMarkers(reviewState.allRecords);
+  fitMapToSubmissions();
   window.addEventListener("morris-theme-change", applyReviewMapTheme);
 
   applyFilters();
@@ -207,6 +210,14 @@ function initializeMap() {
 
   reviewState.map = map;
   hideMapFailure();
+
+  requestAnimationFrame(() => {
+    map.invalidateSize();
+  });
+
+  window.setTimeout(() => {
+    map.invalidateSize();
+  }, 180);
 }
 
 function buildOfficialHotspots(features) {
@@ -234,19 +245,24 @@ function buildSubmissionMarkers(records) {
   const layerGroup = L.layerGroup().addTo(reviewState.map);
   reviewState.submissionLayer = layerGroup;
   reviewState.markerEntries = [];
+  reviewState.submissionBounds = null;
 
   records
     .filter((record) => Number.isFinite(record.latitude) && Number.isFinite(record.longitude))
     .forEach((record) => {
       const category = getSubmissionCategory(record);
-      const marker = L.circleMarker([record.latitude, record.longitude], {
+      const latlng = L.latLng(record.latitude, record.longitude);
+      const marker = L.circleMarker(latlng, {
         pane: "reviewPane",
-        radius: 7,
-        fillColor: "#ffffff",
-        color: category.color,
-        weight: 3,
-        fillOpacity: 0.96,
+        radius: 8,
+        fillColor: category.color,
+        color: "#fffaf3",
+        weight: 2.6,
+        fillOpacity: 0.92,
+        opacity: 0.98,
       }).addTo(layerGroup);
+
+      rememberSubmissionBounds(latlng);
 
       marker.on("click", () => {
         selectSubmission(record.id, true).catch((error) => {
@@ -320,7 +336,30 @@ function populateStatusFilter(records) {
   `;
 }
 
+function initializeFilterDefaults() {
+  elements.filterSubmissionType.value = "all";
+  elements.filterCategory.value = "all";
+  elements.filterPhoto.value = "all";
+  elements.filterReviewStatus.value = "all";
+}
+
+function normalizeFilterValues() {
+  normalizeSelectValue(elements.filterSubmissionType, "all");
+  normalizeSelectValue(elements.filterCategory, "all");
+  normalizeSelectValue(elements.filterPhoto, "all");
+  normalizeSelectValue(elements.filterReviewStatus, "all");
+}
+
+function normalizeSelectValue(select, fallback) {
+  const options = Array.from(select.options).map((option) => option.value);
+  if (!select.value || !options.includes(select.value)) {
+    select.value = fallback;
+  }
+}
+
 function applyFilters() {
+  normalizeFilterValues();
+
   reviewState.filteredRecords = reviewState.allRecords.filter((record) => {
     const typeMatches =
       elements.filterSubmissionType.value === "all" ||
@@ -341,11 +380,19 @@ function applyFilters() {
   renderList();
   updateMarkerVisibility();
 
+  if (!reviewState.selectedId) {
+    fitMapToRecords(reviewState.filteredRecords);
+  }
+
   if (reviewState.selectedId && !reviewState.filteredRecords.some((record) => record.id === reviewState.selectedId)) {
     reviewState.selectedId = null;
+    if (reviewState.map) {
+      reviewState.map.closePopup();
+    }
     elements.detailPanel.innerHTML =
       '<p class="detail-empty">Select a submission from the filtered list or map to review its location, description, status, repeat-report signal, and photo evidence.</p>';
     refreshMarkerStyles();
+    fitMapToRecords(reviewState.filteredRecords);
   }
 }
 
@@ -404,9 +451,12 @@ function renderList() {
 async function selectSubmission(id, recenterMap) {
   reviewState.selectedId = id;
   const record = reviewState.allRecords.find((entry) => entry.id === id);
+  const markerEntry = reviewState.markerEntries.find((entry) => entry.id === id);
 
-  if (record && recenterMap && reviewState.map && Number.isFinite(record.latitude) && Number.isFinite(record.longitude)) {
-    reviewState.map.panTo([record.latitude, record.longitude]);
+  if (record && recenterMap && reviewState.map && markerEntry) {
+    reviewState.map.setView(markerEntry.marker.getLatLng(), Math.max(reviewState.map.getZoom(), 15), {
+      animate: true,
+    });
   }
 
   refreshMarkerStyles();
@@ -414,6 +464,15 @@ async function selectSubmission(id, recenterMap) {
 
   try {
     const detail = await loadSubmissionDetail(id);
+    if (markerEntry) {
+      markerEntry.marker.bindPopup(buildReviewPopup(detail), {
+        className: "map-popup",
+        maxWidth: 280,
+      });
+      markerEntry.marker.openPopup();
+    } else if (reviewState.map) {
+      reviewState.map.closePopup();
+    }
     renderDetail(detail);
   } catch (error) {
     console.error(error);
@@ -440,6 +499,10 @@ function renderDetail(record) {
   }
 
   metaRows.push(["Mode", formatModeList(record.concern_mode)]);
+
+  if (!Number.isFinite(record.latitude) || !Number.isFinite(record.longitude)) {
+    metaRows.push(["Map point", "No map point available for this submission"]);
+  }
 
   if (repeatTotal > 1) {
     metaRows.push(["Repeat reports nearby", `${repeatTotal} total reports in this area`]);
@@ -501,9 +564,12 @@ function updateMarkerVisibility() {
     }
 
     if (!shouldShow && layerHasMarker) {
+      entry.marker.closePopup();
       reviewState.submissionLayer.removeLayer(entry.marker);
     }
   });
+
+  refreshMarkerStyles();
 }
 
 function refreshMarkerStyles() {
@@ -513,12 +579,41 @@ function refreshMarkerStyles() {
     const isSelected = reviewState.selectedId === entry.id;
 
     entry.marker.setStyle({
-      radius: isSelected ? 9 : 7,
-      fillColor: "#ffffff",
-      color: isSelected ? "#203847" : category.color,
-      weight: isSelected ? 4 : 3,
-      fillOpacity: isSelected ? 0.98 : 0.94,
+      radius: isSelected ? 11 : 8,
+      fillColor: isSelected ? "#fffaf3" : category.color,
+      color: isSelected ? category.color : "#fffaf3",
+      weight: isSelected ? 4.6 : 2.6,
+      fillOpacity: isSelected ? 1 : 0.92,
+      opacity: isSelected ? 1 : 0.98,
     });
+  });
+}
+
+function fitMapToSubmissions() {
+  fitMapToRecords(reviewState.allRecords);
+}
+
+function fitMapToRecords(records) {
+  if (!reviewState.map) {
+    return;
+  }
+
+  const points = records
+    .filter((record) => Number.isFinite(record.latitude) && Number.isFinite(record.longitude))
+    .map((record) => [record.latitude, record.longitude]);
+
+  if (!points.length) {
+    return;
+  }
+
+  const bounds = L.latLngBounds(points);
+  if (!bounds.isValid()) {
+    return;
+  }
+
+  reviewState.map.fitBounds(bounds, {
+    padding: [28, 28],
+    maxZoom: 14,
   });
 }
 
@@ -537,6 +632,16 @@ function buildRepeatMap(records) {
   }
 
   return repeats;
+}
+
+function buildReviewPopup(record) {
+  return `
+    <div class="map-popup">
+      <h3>${escapeHtml(record.title)}</h3>
+      <p><strong>${escapeHtml(humanizeSubmissionType(record.submission_type))}</strong> · ${escapeHtml(humanizeReviewStatus(record.review_status))}</p>
+      <p>${escapeHtml(record.location_text || "No location description provided.")}</p>
+    </div>
+  `;
 }
 
 function recordsAppearRelated(first, second) {
@@ -619,6 +724,15 @@ function getHotspotCategory(categoryId) {
       color: "#5f6573",
     }
   );
+}
+
+function rememberSubmissionBounds(latlng) {
+  if (!reviewState.submissionBounds) {
+    reviewState.submissionBounds = L.latLngBounds([latlng], [latlng]);
+    return;
+  }
+
+  reviewState.submissionBounds.extend(latlng);
 }
 
 function humanizeSubmissionType(value) {

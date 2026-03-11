@@ -925,7 +925,7 @@ h2 {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
   gap: 22px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .survey-map-card,
@@ -936,6 +936,7 @@ h2 {
 .review-map-card,
 .review-rail {
   min-width: 0;
+  align-self: start;
 }
 
 .survey-map-card {
@@ -957,7 +958,7 @@ h2 {
 
 #review-map {
   width: 100%;
-  min-height: 720px;
+  min-height: 0;
   height: 100%;
   border-radius: 18px;
   overflow: hidden;
@@ -1011,20 +1012,20 @@ h2 {
 
 .review-snapshot {
   display: grid;
-  gap: 14px;
-  margin: 0 6px 24px;
+  gap: 12px;
+  margin: 0 6px 20px;
 }
 
 .review-metrics {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .review-metric {
   display: grid;
   gap: 6px;
-  padding: 14px 15px;
+  padding: 12px 14px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.58);
   border: 1px solid rgba(29, 42, 52, 0.07);
@@ -1051,23 +1052,30 @@ h2 {
 }
 
 .review-map-card {
-  min-height: var(--workspace-height);
+  height: var(--workspace-height);
+  min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   padding: 18px;
 }
 
+.review-map-card .map-stage {
+  min-height: 0;
+}
+
 .review-rail {
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
-  gap: 14px;
-  padding-bottom: 18px;
-  min-height: var(--workspace-height);
+  gap: 12px;
+  height: var(--workspace-height);
+  min-height: 0;
+  padding-bottom: 14px;
+  overflow: hidden;
 }
 
 .review-filters {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .review-inline-toggle {
@@ -1096,7 +1104,9 @@ h2 {
   gap: 10px;
   min-height: 0;
   overflow: auto;
+  overscroll-behavior: contain;
   padding-right: 4px;
+  align-content: start;
 }
 
 .review-card {
@@ -1124,6 +1134,7 @@ h2 {
 .review-detail {
   display: grid;
   gap: 10px;
+  margin-top: 2px;
 }
 
 .review-photo-block {
@@ -1290,6 +1301,11 @@ h2 {
 
   .review-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .review-map-card,
+  .review-rail {
+    height: auto;
   }
 
   .review-list {
