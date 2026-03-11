@@ -38,8 +38,17 @@ export default {
     }
 
     try {
+      if (url.pathname === "/api/submissions" && request.method === "GET") {
+        return await listSubmissions(request, env, url);
+      }
+
       if (url.pathname === "/api/submissions" && request.method === "POST") {
         return await createSubmission(request, env);
+      }
+
+      const detailMatch = url.pathname.match(/^\/api\/submissions\/([^/]+)$/);
+      if (detailMatch && request.method === "GET") {
+        return await getSubmissionDetail(request, env, detailMatch[1]);
       }
 
       const uploadMatch = url.pathname.match(/^\/api\/submissions\/([^/]+)\/photo-upload-url$/);
@@ -101,6 +110,90 @@ async function createSubmission(request, env) {
     id,
     review_status: "under_review",
     photo_upload_required: Boolean(submission.photo_present),
+  });
+}
+
+async function listSubmissions(request, env, url) {
+  const requestedLimit = Number(url.searchParams.get("limit"));
+  const limit = Number.isFinite(requestedLimit) && requestedLimit > 0 ? Math.min(Math.floor(requestedLimit), 250) : 250;
+
+  const result = await env.SUBMISSIONS_DB.prepare(
+    `SELECT
+      id,
+      submission_type,
+      category,
+      title,
+      location_text,
+      origin_area,
+      desired_destination,
+      latitude,
+      longitude,
+      description,
+      concern_mode,
+      review_status,
+      submitted_at,
+      CASE WHEN photo_key IS NOT NULL AND photo_key != '' THEN 1 ELSE 0 END AS has_photo
+    FROM submissions
+    ORDER BY submitted_at DESC
+    LIMIT ?`,
+  )
+    .bind(limit)
+    .all();
+
+  const submissions = (result.results || []).map((row) => serializeSubmissionRow(row));
+
+  return jsonResponse(request, env, {
+    submissions,
+    limit,
+  });
+}
+
+async function getSubmissionDetail(request, env, submissionId) {
+  const row = await env.SUBMISSIONS_DB.prepare(
+    `SELECT
+      id,
+      submission_type,
+      category,
+      title,
+      location_text,
+      origin_area,
+      desired_destination,
+      latitude,
+      longitude,
+      description,
+      concern_mode,
+      additional_notes,
+      photo_key,
+      photo_filename,
+      photo_content_type,
+      photo_uploaded_at,
+      review_status,
+      submitted_at
+    FROM submissions
+    WHERE id = ?`,
+  )
+    .bind(submissionId)
+    .first();
+
+  if (!row) {
+    return jsonResponse(request, env, { error: "Submission not found." }, 404);
+  }
+
+  const submission = serializeSubmissionRow(row);
+  let photoUrl = null;
+
+  if (submission.photo_key) {
+    const existingObject = await env.SUBMISSION_PHOTOS.head(submission.photo_key);
+    if (existingObject) {
+      photoUrl = await createSignedR2GetUrl(env, submission.photo_key, 600);
+    }
+  }
+
+  return jsonResponse(request, env, {
+    submission: {
+      ...submission,
+      photo_url: photoUrl,
+    },
   });
 }
 
@@ -190,6 +283,47 @@ async function getSubmission(env, submissionId) {
     .first();
 
   return result || null;
+}
+
+function serializeSubmissionRow(row) {
+  return {
+    id: row.id,
+    submission_type: row.submission_type,
+    category: row.category,
+    title: row.title,
+    location_text: row.location_text,
+    origin_area: row.origin_area || "",
+    desired_destination: row.desired_destination || "",
+    latitude: row.latitude === null || row.latitude === undefined ? null : Number(row.latitude),
+    longitude: row.longitude === null || row.longitude === undefined ? null : Number(row.longitude),
+    description: row.description,
+    concern_mode: parseConcernMode(row.concern_mode),
+    additional_notes: row.additional_notes || "",
+    review_status: row.review_status,
+    submitted_at: row.submitted_at,
+    has_photo: Boolean(row.has_photo || row.photo_key),
+    photo_key: row.photo_key || "",
+    photo_filename: row.photo_filename || "",
+    photo_content_type: row.photo_content_type || "",
+    photo_uploaded_at: row.photo_uploaded_at || null,
+  };
+}
+
+function parseConcernMode(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item)).filter(Boolean);
+  }
+
+  if (typeof value !== "string" || !value.trim()) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed.map((item) => String(item)).filter(Boolean) : [];
+  } catch (_error) {
+    return [];
+  }
 }
 
 function validateSubmissionPayload(body) {
@@ -346,6 +480,55 @@ async function createSignedR2PutUrl(env, photoKey, contentType, expiresInSeconds
   return `https://${host}${canonicalUri}?${canonicalQueryString}&X-Amz-Signature=${signature}`;
 }
 
+async function createSignedR2GetUrl(env, photoKey, expiresInSeconds) {
+  const host = `${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+  const method = "GET";
+  const region = "auto";
+  const service = "s3";
+  const now = new Date();
+  const amzDate = formatAmzDate(now);
+  const dateStamp = amzDate.slice(0, 8);
+  const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
+  const canonicalUri = `/${awsEncodeUriPath(env.R2_BUCKET_NAME)}/${awsEncodeUriPath(photoKey)}`;
+  const signedHeaders = "host";
+
+  const queryParams = [
+    ["X-Amz-Algorithm", "AWS4-HMAC-SHA256"],
+    ["X-Amz-Credential", `${env.R2_ACCESS_KEY_ID}/${credentialScope}`],
+    ["X-Amz-Date", amzDate],
+    ["X-Amz-Expires", String(expiresInSeconds)],
+    ["X-Amz-SignedHeaders", signedHeaders],
+  ];
+
+  const canonicalQueryString = queryParams
+    .slice()
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([key, value]) => `${awsEncodeQueryValue(key)}=${awsEncodeQueryValue(value)}`)
+    .join("&");
+
+  const canonicalHeaders = `host:${host}\n`;
+  const canonicalRequest = [
+    method,
+    canonicalUri,
+    canonicalQueryString,
+    canonicalHeaders,
+    signedHeaders,
+    "UNSIGNED-PAYLOAD",
+  ].join("\n");
+
+  const stringToSign = [
+    "AWS4-HMAC-SHA256",
+    amzDate,
+    credentialScope,
+    await sha256Hex(canonicalRequest),
+  ].join("\n");
+
+  const signingKey = await getSignatureKey(env.R2_SECRET_ACCESS_KEY, dateStamp, region, service);
+  const signature = await hmacHex(signingKey, stringToSign);
+
+  return `https://${host}${canonicalUri}?${canonicalQueryString}&X-Amz-Signature=${signature}`;
+}
+
 function formatAmzDate(date) {
   const year = date.getUTCFullYear();
   const month = String(date.getUTCMonth() + 1).padStart(2, "0");
@@ -476,7 +659,7 @@ function corsHeaders(request, env) {
 
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",

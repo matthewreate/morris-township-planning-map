@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Morris Township Working Group Review</title>
+    <meta
+      name="description"
+      content="A working-group review board for Morris Township survey submissions, photos, and location context."
+    />
+    <script>
+      (() => {
+        try {
+          const storedTheme = localStorage.getItem("morris-township-theme");
+          document.documentElement.dataset.theme = storedTheme || "light";
+        } catch (_error) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="review-page">
+    <div class="page-shell">
+      <header class="page-header">
+        <div class="survey-intro">
+          <p class="eyebrow">Working Group Review</p>
+          <h1>Review Mode</h1>
+          <p class="lede">
+            A working board for reading new survey submissions in place, checking repeat
+            reports, and reviewing attached photos before anything enters the official
+            planning record.
+          </p>
+        </div>
+      </header>
+
+      <section class="process-header panel" aria-labelledby="review-process-title">
+        <div class="process-copy">
+          <p class="process-eyebrow">Review Board</p>
+          <h2 class="process-title" id="review-process-title">Current use: working-group review and discussion.</h2>
+          <p class="process-note">
+            This page shows raw survey submissions under review. It is distinct from the official planning map and is shared directly with the working group.
+          </p>
+        </div>
+        <div class="process-actions">
+          <a href="index.html" class="process-link">Back to Planning Map</a>
+          <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+            <span data-theme-label>Dark mode</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel review-snapshot" aria-labelledby="review-snapshot-title">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Snapshot</p>
+            <h2 id="review-snapshot-title">Current review queue</h2>
+          </div>
+        </div>
+        <div class="review-metrics">
+          <div class="review-metric">
+            <span class="review-metric-label">Total submissions</span>
+            <strong class="review-metric-value" id="metric-total">0</strong>
+          </div>
+          <div class="review-metric">
+            <span class="review-metric-label">Under review</span>
+            <strong class="review-metric-value" id="metric-under-review">0</strong>
+          </div>
+          <div class="review-metric">
+            <span class="review-metric-label">With photos</span>
+            <strong class="review-metric-value" id="metric-with-photos">0</strong>
+          </div>
+          <div class="review-metric">
+            <span class="review-metric-label">Trouble spots</span>
+            <strong class="review-metric-value" id="metric-hotspots">0</strong>
+          </div>
+          <div class="review-metric">
+            <span class="review-metric-label">Route requests</span>
+            <strong class="review-metric-value" id="metric-route-requests">0</strong>
+          </div>
+          <div class="review-metric">
+            <span class="review-metric-label">Top category</span>
+            <strong class="review-metric-value review-metric-text" id="metric-top-category">None yet</strong>
+          </div>
+        </div>
+      </section>
+
+      <main class="review-workspace">
+        <section class="panel review-map-card">
+          <div class="map-card-header">
+            <div>
+              <p class="eyebrow">Review Map</p>
+              <h2>Recent submissions and location context</h2>
+              <p class="panel-subtitle">
+                Individual submission points remain separate in this first review pass.
+              </p>
+            </div>
+            <label class="review-inline-toggle">
+              <input type="checkbox" id="review-hotspot-context" checked />
+              <span>Show official hotspot context</span>
+            </label>
+          </div>
+          <div class="map-stage">
+            <div id="review-map" aria-label="Working group review map"></div>
+            <div class="map-status" id="review-map-status" hidden role="status" aria-live="polite">
+              <p class="map-status-copy">
+                The review map could not be loaded right now. The submission list remains available below.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel review-rail">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Review Rail</p>
+              <h2>Submissions</h2>
+              <p class="panel-subtitle">
+                Newest first, with basic review filters for type, category, photos, and status.
+              </p>
+            </div>
+          </div>
+
+          <form class="review-filters" id="review-filters">
+            <label class="field">
+              <span class="field-label">Submission type</span>
+              <select id="filter-submission-type">
+                <option value="all">All submissions</option>
+                <option value="hotspot">Trouble spots</option>
+                <option value="destination_request">Route requests</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Category</span>
+              <select id="filter-category">
+                <option value="all">All categories</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Photo</span>
+              <select id="filter-photo">
+                <option value="all">With or without photo</option>
+                <option value="with_photo">With photo</option>
+                <option value="without_photo">Without photo</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Review status</span>
+              <select id="filter-review-status">
+                <option value="all">All statuses</option>
+              </select>
+            </label>
+          </form>
+
+          <div class="review-list-header">
+            <h3 class="legend-group-title">Newest first</h3>
+            <span class="pill" id="review-visible-count">0 shown</span>
+          </div>
+          <div class="review-list" id="review-list" aria-live="polite"></div>
+        </aside>
+      </main>
+
+      <section class="panel review-detail" aria-labelledby="review-detail-title">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Submission Detail</p>
+            <h2 id="review-detail-title">Selected submission</h2>
+          </div>
+        </div>
+        <div class="detail-panel" id="review-detail-panel">
+          <p class="detail-empty">
+            Select a submission from the list or map to review its location, description, status, repeat-report signal, and photo evidence.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <noscript>
+      <div class="noscript-banner">
+        JavaScript is required to load the review map and submission rail.
+      </div>
+    </noscript>
+
+    <script src="vendor/leaflet/leaflet.js"></script>
+    <script src="theme.js"></script>
+    <script src="review.js"></script>
+  </body>
+</html>

@@ -2,17 +2,20 @@
 
 Static Leaflet prototype for reviewing Morris Township walkability and bikeability issues with a small working group. The public site runs as a lightweight GitHub Pages project with no build step, and it can now be paired with a minimal Cloudflare Worker for live survey intake.
 
-The project now has two clearly distinct public-facing surfaces:
+The project now has three distinct surfaces:
 - `index.html` is the official planning reference used for working-group review and orientation.
 - `survey.html` is the April survey-phase intake tool, where responses remain under review and separate from the official planning map.
+- `review.html` is an unlinked working-group review board for reading live submissions, photos, and repeat-report signals before records are curated further.
 
 ## File Structure
 
 - `index.html` sets up the official planning-view page shell, sidebar sections, and Leaflet map container.
 - `survey.html` provides the guided Survey Mode intake page for the April survey phase.
+- `review.html` provides the unlinked Working Group Review Mode page for reading live survey submissions in place.
 - `styles.css` contains the responsive layout and the civic/editorial visual styling.
 - `script.js` loads the local GeoJSON files, initializes the Leaflet map, and manages filters, layer toggles, the visible-hotspots list, popups, and the detail panel.
 - `survey.js` manages the Survey Mode map, form switching, map-click capture, and live submission handoff to the Cloudflare intake API.
+- `review.js` manages the Working Group Review Mode map, filter rail, repeat-report signals, and signed photo-detail loading.
 - `cloudflare/src/index.mjs` is the minimal Worker that creates submission records, issues photo-upload authorization, and finalizes uploaded photo metadata.
 - `cloudflare/schema.sql` defines the D1 schema for the live intake database.
 - `cloudflare/wrangler.toml` contains the Worker bindings and placeholder environment configuration.
@@ -66,7 +69,7 @@ The destination layer is intentionally small and curated. It should function as 
 The public website remains the map and survey interface. When live intake is enabled, Survey Mode submits structured records to a small Cloudflare Worker:
 - the Worker stores structured submission data in D1
 - optional photos are uploaded to R2
-- the planning group later reviews submissions before anything enters the official planning record
+- the planning group later reviews submissions in `review.html` before anything enters the official planning record
 
 This keeps the public site simple while still allowing real uploads from a phone or computer. The only server-side component is the Worker.
 
@@ -193,6 +196,37 @@ Request body:
 - `filename`
 - `content_type`
 
+### `GET /api/submissions?limit=250`
+Returns the most recent submission metadata for Working Group Review Mode.
+
+Response:
+- `submissions`
+- `limit`
+
+Each submission includes:
+- `id`
+- `submission_type`
+- `category`
+- `title`
+- `location_text`
+- `origin_area`
+- `desired_destination`
+- `latitude`
+- `longitude`
+- `description`
+- `concern_mode`
+- `review_status`
+- `submitted_at`
+- `has_photo`
+
+### `GET /api/submissions/:id`
+Returns one full submission record for the review detail panel.
+
+Response:
+- `submission`
+
+If a photo exists, the detail response also includes a short-lived signed `photo_url` for review display.
+
 ## Survey Mode
 
 `survey.html` is the guided intake page for the April survey phase. It is intentionally distinct from the official planning viewer in `index.html`.
@@ -208,6 +242,7 @@ Survey Mode:
 The planning viewer and Survey Mode are intentionally labeled as different phases of the same process:
 - `Official Planning View` = working-group reference and orientation
 - `Survey Intake View` = April resident input held under review
+- `Working Group Review Mode` = raw submission review, repeat-report reading, and photo checking before curation
 
 ## Easiest Next Steps
 

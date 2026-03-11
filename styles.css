@@ -82,6 +82,19 @@ a {
   padding: 8px 6px 26px;
 }
 
+.process-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px 24px;
+  align-items: start;
+  margin: 0 6px 24px;
+}
+
+.process-copy {
+  display: grid;
+  gap: 8px;
+}
+
 .process-actions {
   display: grid;
   gap: 10px;
@@ -908,8 +921,20 @@ h2 {
   align-items: stretch;
 }
 
+.review-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
+  gap: 22px;
+  align-items: stretch;
+}
+
 .survey-map-card,
 .survey-form-panel {
+  min-width: 0;
+}
+
+.review-map-card,
+.review-rail {
   min-width: 0;
 }
 
@@ -922,6 +947,15 @@ h2 {
 }
 
 #survey-map {
+  width: 100%;
+  min-height: 720px;
+  height: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(29, 42, 52, 0.1);
+}
+
+#review-map {
   width: 100%;
   min-height: 720px;
   height: 100%;
@@ -973,6 +1007,139 @@ h2 {
 .survey-under-review {
   display: grid;
   gap: 10px;
+}
+
+.review-snapshot {
+  display: grid;
+  gap: 14px;
+  margin: 0 6px 24px;
+}
+
+.review-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.review-metric {
+  display: grid;
+  gap: 6px;
+  padding: 14px 15px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(29, 42, 52, 0.07);
+}
+
+.review-metric-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.review-metric-value {
+  font-family: "Fraunces", serif;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.review-metric-text {
+  font-size: 1.08rem;
+  line-height: 1.25;
+}
+
+.review-map-card {
+  min-height: var(--workspace-height);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding: 18px;
+}
+
+.review-rail {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  gap: 14px;
+  padding-bottom: 18px;
+  min-height: var(--workspace-height);
+}
+
+.review-filters {
+  display: grid;
+  gap: 12px;
+}
+
+.review-inline-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.review-inline-toggle input {
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.review-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.review-list {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.review-card {
+  display: grid;
+  gap: 8px;
+}
+
+.review-card-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.review-card-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.review-pill {
+  font-size: 0.75rem;
+}
+
+.review-detail {
+  display: grid;
+  gap: 10px;
+}
+
+.review-photo-block {
+  display: grid;
+  gap: 10px;
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid rgba(29, 42, 52, 0.08);
+}
+
+.review-photo {
+  display: block;
+  max-width: min(100%, 560px);
+  border-radius: 18px;
+  border: 1px solid rgba(29, 42, 52, 0.1);
+  box-shadow: var(--shadow);
 }
 
 .map-card {
@@ -1072,10 +1239,12 @@ h2 {
 
 @media (max-width: 1040px) {
   .masthead,
+  .process-header,
   .project-notes-summary,
   .workspace,
   .survey-guidance-grid,
-  .survey-workspace {
+  .survey-workspace,
+  .review-workspace {
     grid-template-columns: 1fr;
   }
 
@@ -1113,8 +1282,19 @@ h2 {
   }
 
   #survey-map,
-  .survey-map-card .map-stage {
+  .survey-map-card .map-stage,
+  #review-map,
+  .review-map-card .map-stage {
     min-height: 540px;
+  }
+
+  .review-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .review-list {
+    overflow: visible;
+    padding-right: 0;
   }
 }
 
@@ -1144,7 +1324,8 @@ h2 {
 }
 
 :root[data-theme="dark"] .hotspot-card.is-active,
-:root[data-theme="dark"] .survey-confirmation {
+:root[data-theme="dark"] .survey-confirmation,
+:root[data-theme="dark"] .review-metric {
   background: rgba(47, 79, 96, 0.28);
 }
 
@@ -1226,12 +1407,18 @@ h2 {
   }
 
   #survey-map,
-  .survey-map-card .map-stage {
+  .survey-map-card .map-stage,
+  #review-map,
+  .review-map-card .map-stage {
     min-height: 420px;
   }
 
   .detail-meta-row {
     grid-template-columns: 1fr;
     gap: 2px;
+  }
+
+  .review-metrics {
+    grid-template-columns: 1fr;
   }
 }
