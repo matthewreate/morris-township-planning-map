@@ -611,6 +611,16 @@ function getSubmissionCategory(record) {
   );
 }
 
+function getHotspotCategory(categoryId) {
+  return (
+    HOTSPOT_CATEGORIES.find((category) => category.id === categoryId) || {
+      id: categoryId,
+      label: formatCategoryLabel(categoryId),
+      color: "#5f6573",
+    }
+  );
+}
+
 function humanizeSubmissionType(value) {
   return value === "destination_request" ? "Route request" : "Trouble spot";
 }
