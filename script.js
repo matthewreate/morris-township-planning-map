@@ -120,6 +120,10 @@ const elements = {
   detailPanel: document.getElementById("detail-panel"),
   referenceContent: document.getElementById("reference-content"),
   mapStatus: document.getElementById("map-status"),
+  visibleHotspotsToggle: document.getElementById("visible-hotspots-toggle"),
+  visibleHotspotsSection: document.getElementById("visible-hotspots-section"),
+  mapRecordToggle: document.getElementById("map-record-toggle"),
+  mapRecordSection: document.getElementById("map-record-section"),
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -142,6 +146,7 @@ async function init() {
   renderCategoryFilters(hotspots.features);
   renderLayerToggles();
   renderReviewLayerToggles();
+  bindSidebarSections();
   renderMapReference();
   if (!ensureLeafletAvailable()) {
     elements.detailPanel.innerHTML =
@@ -414,27 +419,22 @@ function renderCategoryFilters(features) {
   elements.categoryFilters.innerHTML = "";
 
   HOTSPOT_CATEGORIES.forEach((category) => {
-    const wrapper = document.createElement("details");
-    wrapper.className = "control-item control-item-collapsible";
+    const wrapper = document.createElement("label");
+    wrapper.className = "control-item";
     wrapper.innerHTML = `
-      <summary class="control-summary">
-        <span class="control-main">
-          <input type="checkbox" name="hotspot-category" value="${category.id}" checked />
-          <span class="swatch" style="background:${category.color}"></span>
-          <span class="control-text">
-            <span class="control-label">${category.label}</span>
-          </span>
+      <span class="control-main">
+        <input type="checkbox" name="hotspot-category" value="${category.id}" checked />
+        <span class="swatch" style="background:${category.color}"></span>
+        <span class="control-text">
+          <span class="control-label">${category.label}</span>
+          <span class="control-hint">${category.description}</span>
         </span>
-        <span class="pill">${counts[category.id] || 0}</span>
-      </summary>
-      <div class="control-body">
-        <p class="control-hint">${category.description}</p>
-      </div>
+      </span>
+      <span class="pill">${counts[category.id] || 0}</span>
     `;
     elements.categoryFilters.append(wrapper);
   });
 
-  bindControlToggleGuards(elements.categoryFilters);
   elements.categoryFilters.addEventListener("change", () => {
     const checkedValues = Array.from(
       elements.categoryFilters.querySelectorAll("input:checked"),
@@ -449,26 +449,21 @@ function renderLayerToggles() {
   elements.layerToggles.innerHTML = "";
 
   CONTEXT_GROUPS.forEach((group) => {
-    const wrapper = document.createElement("details");
-    wrapper.className = "control-item control-item-collapsible";
+    const wrapper = document.createElement("label");
+    wrapper.className = "control-item";
     wrapper.innerHTML = `
-      <summary class="control-summary">
-        <span class="control-main">
-          <input type="checkbox" name="context-group" value="${group.id}" checked />
-          <span class="swatch-line" style="border-top-color:${group.color}"></span>
-          <span class="control-text">
-            <span class="control-label">${group.label}</span>
-          </span>
+      <span class="control-main">
+        <input type="checkbox" name="context-group" value="${group.id}" checked />
+        <span class="swatch-line" style="border-top-color:${group.color}"></span>
+        <span class="control-text">
+          <span class="control-label">${group.label}</span>
+          <span class="control-hint">${group.description}</span>
         </span>
-      </summary>
-      <div class="control-body">
-        <p class="control-hint">${group.description}</p>
-      </div>
+      </span>
     `;
     elements.layerToggles.append(wrapper);
   });
 
-  bindControlToggleGuards(elements.layerToggles);
   elements.layerToggles.addEventListener("change", () => {
     const checkedValues = Array.from(
       elements.layerToggles.querySelectorAll("input:checked"),
@@ -494,26 +489,21 @@ function renderReviewLayerToggles() {
   elements.reviewLayerToggles.innerHTML = "";
 
   REVIEW_LAYER_GROUPS.forEach((group) => {
-    const wrapper = document.createElement("details");
-    wrapper.className = "control-item control-item-collapsible";
+    const wrapper = document.createElement("label");
+    wrapper.className = "control-item";
     wrapper.innerHTML = `
-      <summary class="control-summary">
-        <span class="control-main">
-          <input type="checkbox" name="review-layer" value="${group.id}" checked />
-          <span class="swatch" style="background:#ffffff; box-shadow: 0 0 0 2px ${group.color}"></span>
-          <span class="control-text">
-            <span class="control-label">${group.label}</span>
-          </span>
+      <span class="control-main">
+        <input type="checkbox" name="review-layer" value="${group.id}" checked />
+        <span class="swatch" style="background:#ffffff; box-shadow: 0 0 0 2px ${group.color}"></span>
+        <span class="control-text">
+          <span class="control-label">${group.label}</span>
+          <span class="control-hint">${group.description}</span>
         </span>
-      </summary>
-      <div class="control-body">
-        <p class="control-hint">${group.description}</p>
-      </div>
+      </span>
     `;
     elements.reviewLayerToggles.append(wrapper);
   });
 
-  bindControlToggleGuards(elements.reviewLayerToggles);
   elements.reviewLayerToggles.addEventListener("change", () => {
     const checkedValues = Array.from(
       elements.reviewLayerToggles.querySelectorAll("input:checked"),
@@ -533,11 +523,20 @@ function renderReviewLayerToggles() {
   });
 }
 
-function bindControlToggleGuards(container) {
-  container.addEventListener("click", (event) => {
-    if (event.target instanceof HTMLInputElement) {
-      event.stopPropagation();
-    }
+function bindSidebarSections() {
+  bindSidebarSection(elements.visibleHotspotsToggle, elements.visibleHotspotsSection);
+  bindSidebarSection(elements.mapRecordToggle, elements.mapRecordSection);
+}
+
+function bindSidebarSection(toggle, section) {
+  if (!toggle || !section) {
+    return;
+  }
+
+  toggle.addEventListener("click", () => {
+    const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!isExpanded));
+    section.hidden = isExpanded;
   });
 }
 

@@ -334,11 +334,18 @@ h2 {
   gap: 10px;
 }
 
+.tool-group-accordion {
+  gap: 0;
+}
+
 .tool-group-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  cursor: pointer;
+  list-style: none;
+  padding: 0;
 }
 
 .tool-group-header h3 {
@@ -347,6 +354,32 @@ h2 {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.tool-group-header::-webkit-details-marker {
+  display: none;
+}
+
+.tool-group-header::after,
+.sidebar-section-toggle::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 120ms ease;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.tool-group-accordion[open] > .tool-group-header::after,
+.sidebar-section-toggle[aria-expanded="true"]::after {
+  transform: rotate(-135deg);
+}
+
+.tool-group-body {
+  padding-top: 10px;
 }
 
 .control-list {
@@ -367,40 +400,6 @@ h2 {
 
 .control-item:hover {
   border-color: rgba(39, 86, 107, 0.24);
-}
-
-.control-item-collapsible {
-  display: grid;
-  gap: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-.control-summary {
-  list-style: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 12px 14px;
-  cursor: pointer;
-}
-
-.control-summary::-webkit-details-marker {
-  display: none;
-}
-
-.control-summary .control-main {
-  min-width: 0;
-}
-
-.control-item-collapsible .control-body {
-  padding: 0 14px 12px 52px;
-  border-top: 1px solid rgba(29, 42, 52, 0.08);
-}
-
-.control-item-collapsible .control-hint {
-  margin: 0;
 }
 
 .control-main {
@@ -460,6 +459,28 @@ h2 {
   font-size: 0.82rem;
   font-weight: 700;
   white-space: nowrap;
+}
+
+.sidebar-section-toggle {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.sidebar-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.sidebar-section-body {
+  padding-top: 14px;
 }
 
 .reference-section {
