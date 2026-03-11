@@ -38,6 +38,7 @@ const reviewState = {
   detailCache: new Map(),
   repeatMap: new Map(),
   selectedId: null,
+  openRailId: null,
   submissionBounds: null,
 };
 
@@ -381,11 +382,13 @@ function applyFilters() {
   updateMarkerVisibility();
 
   if (!reviewState.selectedId) {
+    reviewState.openRailId = null;
     fitMapToRecords(reviewState.filteredRecords);
   }
 
   if (reviewState.selectedId && !reviewState.filteredRecords.some((record) => record.id === reviewState.selectedId)) {
     reviewState.selectedId = null;
+    reviewState.openRailId = null;
     if (reviewState.map) {
       reviewState.map.closePopup();
     }
@@ -409,11 +412,13 @@ function renderList() {
   reviewState.filteredRecords.forEach((record) => {
     const category = getSubmissionCategory(record);
     const repeatTotal = getRepeatTotal(record.id);
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "hotspot-card review-card";
+    const item = document.createElement("details");
+    item.className = "hotspot-card review-card review-item";
+    item.dataset.submissionId = record.id;
+    item.open = reviewState.openRailId === record.id;
+
     if (reviewState.selectedId === record.id) {
-      button.classList.add("is-active");
+      item.classList.add("is-active");
     }
 
     const secondaryMeta = [
@@ -422,34 +427,74 @@ function renderList() {
       formatShortDate(record.submitted_at),
     ];
 
-    button.innerHTML = `
-      <div class="hotspot-card-header">
-        <p class="hotspot-card-title">${escapeHtml(record.title)}</p>
+    item.innerHTML = `
+      <summary class="review-item-summary">
+        <div class="review-item-summary-main">
+          <p class="hotspot-card-title">${escapeHtml(record.title)}</p>
+          <div class="review-card-flags">
+            ${record.has_photo ? '<span class="pill review-pill">Photo</span>' : ""}
+            ${repeatTotal > 1 ? `<span class="pill review-pill">${repeatTotal} reports nearby</span>` : ""}
+          </div>
+        </div>
         <span class="mini-tag">
           <span class="swatch" style="background:${category.color}"></span>
           ${escapeHtml(category.label)}
         </span>
-      </div>
-      <p class="review-card-meta">${escapeHtml(secondaryMeta.join(" · "))}</p>
-      <p>${escapeHtml(record.location_text || "No location description provided.")}</p>
-      <div class="review-card-flags">
-        ${record.has_photo ? '<span class="pill review-pill">Photo</span>' : ""}
-        ${repeatTotal > 1 ? `<span class="pill review-pill">${repeatTotal} reports nearby</span>` : ""}
+      </summary>
+      <div class="review-item-body">
+        <p class="review-item-meta">${escapeHtml(secondaryMeta.join(" · "))}</p>
+        <p class="review-item-location">${escapeHtml(record.location_text || "No location description provided.")}</p>
       </div>
     `;
 
-    button.addEventListener("click", () => {
-      selectSubmission(record.id, true).catch((error) => {
-        console.error(error);
-      });
+    const summary = item.querySelector("summary");
+
+    summary.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      const nextOpen = reviewState.openRailId === record.id ? null : record.id;
+      setOpenRailId(nextOpen);
+
+      if (nextOpen) {
+        selectSubmission(record.id, true).catch((error) => {
+          console.error(error);
+        });
+        return;
+      }
+
+      if (reviewState.selectedId === record.id) {
+        if (reviewState.map) {
+          reviewState.map.closePopup();
+        }
+        reviewState.selectedId = null;
+        renderList();
+        refreshMarkerStyles();
+      }
     });
 
-    elements.reviewList.append(button);
+    item.addEventListener("toggle", () => {
+      if (!item.open && reviewState.openRailId === record.id) {
+        reviewState.openRailId = null;
+      }
+    });
+
+    elements.reviewList.append(item);
+  });
+}
+
+function setOpenRailId(id) {
+  reviewState.openRailId = id;
+  const items = elements.reviewList.querySelectorAll(".review-item");
+
+  items.forEach((item) => {
+    const shouldOpen = Boolean(id) && item.dataset.submissionId === id;
+    item.open = shouldOpen;
   });
 }
 
 async function selectSubmission(id, recenterMap) {
   reviewState.selectedId = id;
+  reviewState.openRailId = id;
   const record = reviewState.allRecords.find((entry) => entry.id === id);
   const markerEntry = reviewState.markerEntries.find((entry) => entry.id === id);
 
@@ -459,8 +504,9 @@ async function selectSubmission(id, recenterMap) {
     });
   }
 
-  refreshMarkerStyles();
   renderList();
+  refreshMarkerStyles();
+  setOpenRailId(id);
 
   try {
     const detail = await loadSubmissionDetail(id);
