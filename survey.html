@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Morris Township Walking, Rolling, and Cycling Survey</title>
+    <title>Morris Township Transportation Survey</title>
     <meta
       name="description"
-      content="A guided survey page for collecting structured walking, rolling, and cycling input in Morris Township, New Jersey."
+      content="A survey from the Morris Township Transportation Advisory Committee for collecting walking, rolling, and cycling input from residents."
     />
     <script>
       (() => {
@@ -32,45 +32,19 @@
     <div class="page-shell">
       <header class="page-header">
         <div class="survey-intro">
-          <p class="eyebrow">Survey Mode</p>
-          <h1>Morris Township Walking, Rolling, and Cycling Survey</h1>
+          <p class="eyebrow">Transportation Advisory Committee</p>
+          <h1>Morris Township Transportation Survey</h1>
           <p class="lede">
-            A guided intake page for April survey responses, including specific trouble spots, route requests, and optional photo evidence for review.
+            Help the Transportation Advisory Committee understand where residents walk, roll, and cycle — and what gets in the way. Share a specific trouble spot or describe a trip you want to make.
           </p>
         </div>
       </header>
 
-      <section class="notes-strip panel" aria-labelledby="survey-notes-title">
-        <div class="notes-summary">
-          <div class="notes-copy">
-            <p class="process-eyebrow">Survey Intake View</p>
-            <h2 class="project-notes-title" id="survey-notes-title">This page collects trouble spots and route requests under review.</h2>
-          </div>
-          <div class="notes-actions">
-            <a href="index.html" class="process-link">Back to Planning Map</a>
-            <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
-              <span data-theme-label>Dark mode</span>
-            </button>
-          </div>
-        </div>
-        <details class="notes-details">
-          <summary class="notes-toggle">View survey status and submission notes</summary>
-          <div class="notes-grid">
-            <section class="notes-block">
-              <h3 class="legend-group-title">Status</h3>
-              <p class="legend-copy">April resident input is collected here for review before anything enters the planning record.</p>
-            </section>
-            <section class="notes-block">
-              <h3 class="legend-group-title">Photo Upload</h3>
-              <p class="legend-copy">Optional photo evidence can be attached here to document a specific condition, but it is not required for submission.</p>
-            </section>
-            <section class="notes-block">
-              <h3 class="legend-group-title">Planning Relationship</h3>
-              <p class="legend-copy">Survey responses remain under review and do not replace the official planning map until the working group decides how they should be used.</p>
-            </section>
-          </div>
-        </details>
-      </section>
+      <div class="notes-strip panel" style="display:flex;align-items:center;justify-content:flex-end;padding:0.75rem 1.25rem;">
+        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+          <span data-theme-label>Dark mode</span>
+        </button>
+      </div>
 
       <section class="panel survey-guidance" aria-labelledby="survey-guidance-title">
         <div class="panel-header">
@@ -105,7 +79,7 @@
               <p class="eyebrow">Survey Map</p>
               <h2>Place Your Input on the Map</h2>
               <p class="panel-subtitle">
-                Sample under-review route requests and trouble-spot reports are shown for orientation. Official hotspot points remain visible but subdued.
+                Sample submissions are shown for orientation. You can zoom and pan, then click the map to drop a pin at your location.
               </p>
             </div>
           </div>
@@ -125,7 +99,7 @@
               <p class="eyebrow">Survey Intake</p>
               <h2>Share a Trouble Spot or Route Request</h2>
               <p class="panel-subtitle">
-                Submit a structured report here. Optional photo evidence can be attached and all entries remain under review.
+                Fill out the form below to share a trouble spot or route request. A photo is optional but helpful.
               </p>
             </div>
           </div>
@@ -197,7 +171,7 @@
                 Rolling is mainly for wheelchairs, strollers, mobility devices, and other wheeled travel.
               </p>
               <p class="field-help field-error" id="mode-error" hidden>
-                Choose at least one mode so the planning group can understand the trip or concern you are describing.
+                Choose at least one mode so the TAC can understand the trip or concern you are describing.
               </p>
             </fieldset>
 
@@ -215,9 +189,9 @@
             </label>
 
             <div class="drawer-footer">
-              <button type="submit" class="future-button future-button-live" id="survey-submit-button">Submit for Review</button>
+              <button type="submit" class="future-button future-button-live" id="survey-submit-button">Submit</button>
               <p class="field-help">
-                This form submits directly into the planning review workflow. Uploaded photos remain under review with the submission.
+                Your response goes directly to the Transportation Advisory Committee. Uploaded photos are included with your submission.
               </p>
             </div>
           </form>
@@ -227,12 +201,12 @@
       <section class="panel survey-under-review" aria-labelledby="under-review-title">
         <div class="panel-header">
           <div>
-            <p class="eyebrow">Under Review</p>
-            <h2 id="under-review-title">Survey responses remain distinct from the official planning map.</h2>
+            <p class="eyebrow">About This Survey</p>
+            <h2 id="under-review-title">Your input goes to the Morris Township Transportation Advisory Committee.</h2>
           </div>
         </div>
         <p class="survey-helper">
-          The current planning map reflects official working-group data. Survey responses collected during this phase are under review and do not instantly become official records.
+          This survey is run by the Transportation Advisory Committee (TAC) to collect resident input on walking, rolling, and cycling conditions in Morris Township. All submissions are reviewed by the TAC.
         </p>
       </section>
     </div>
